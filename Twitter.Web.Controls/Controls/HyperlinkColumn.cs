@@ -1,4 +1,4 @@
-﻿// ${FileName}
+﻿// HyperlinkColumn.cs
 
 // Copyright (C) 2013 Pedro Fernandes
 

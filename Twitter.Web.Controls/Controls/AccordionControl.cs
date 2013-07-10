@@ -1,6 +1,6 @@
-﻿// PageHeader.cs
+﻿// AccordionControl.cs
 
-// Copyright (C) 2013 Pedro Fernandes
+// Copyright (C) 2013 Francois Viljoen
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,14 +13,15 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.ComponentModel;
 
 namespace Twitter.Web.Controls
 {
-    [ToolboxData("<{0}:PageHeader runat=server />")]
-    public class PageHeader : WebControl, INamingContainer
+    [ToolboxData("<{0}:AccordionControl runat=server id=AccordionControl1></{0}:AccordionControl>")]
+    [ParseChildren(true, "AccordionPanes")]
+    public class AccordionControl : WebControl, INamingContainer
     {
 
         #region CssClass method
@@ -45,32 +46,27 @@ namespace Twitter.Web.Controls
 
         #endregion
 
+        private AccordionPaneCollection _Panes;
+
         /// <summary>
-        /// Gets or sets the title.
+        /// Initializes a new instance of the <see cref="TabControl" /> class.
         /// </summary>
-        /// <value>
-        /// The title.
-        /// </value>
-        [Category("Appearance")]
-        [DefaultValue("")]
-        public string Title
+        public AccordionControl()
         {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
+            _Panes = new AccordionPaneCollection(this);
         }
 
         /// <summary>
-        /// Gets or sets the sub title.
+        /// Gets the tab pages.
         /// </summary>
         /// <value>
-        /// The sub title.
+        /// The tab pages.
         /// </value>
-        [Category("Appearance")]
-        [DefaultValue("")]
-        public string SubTitle
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        public AccordionPaneCollection AccordionPanes
         {
-            get { return (string)ViewState["SubTitle"]; }
-            set { ViewState["SubTitle"] = value; }
+            get { return _Panes; }
         }
 
         /// <summary>
@@ -83,22 +79,13 @@ namespace Twitter.Web.Controls
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
             this.AddCssClass(this.CssClass);
-            this.AddCssClass("page-header");
+            this.AddCssClass("accordion");
 
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
@@ -108,23 +95,42 @@ namespace Twitter.Web.Controls
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        public override void RenderEndTag(HtmlTextWriter writer)
         {
-            output.RenderBeginTag(HtmlTextWriterTag.H1);
-            output.Write(this.Title);
-            output.RenderEndTag();
-
-            if (!String.IsNullOrEmpty(this.SubTitle))
-            {
-                output.RenderBeginTag(HtmlTextWriterTag.Small);
-                output.Write(this.SubTitle);
-                output.RenderEndTag();
-            }
-
-            this.RenderChildren(output);
+            writer.RenderEndTag();
         }
+
+        /// <summary>
+        /// Gets a <see cref="T:System.Web.UI.ControlCollection" /> object that represents the child controls for a specified server control in the UI hierarchy.
+        /// </summary>
+        /// <returns>
+        /// The collection of child controls for the specified server control.
+        ///   </returns>
+        public override ControlCollection Controls
+        {
+            get
+            {
+                this.EnsureChildControls();
+                return base.Controls;
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
+        protected override void OnInit(System.EventArgs e)
+        {
+            base.OnInit(e);
+
+            // Initialize all child controls.
+            this.CreateChildControls();
+            this.ChildControlsCreated = true;
+        }
+
+
     }
 }

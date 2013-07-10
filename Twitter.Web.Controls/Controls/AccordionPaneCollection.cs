@@ -1,6 +1,6 @@
-﻿// ListItemCollection.cs
+﻿// AccordionPaneCollection.cs
 
-// Copyright (C) 2013 Pedro Fernandes
+// Copyright (C) 2013 Francois Viljoen
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,15 +17,15 @@ using System.Web.UI;
 
 namespace Twitter.Web.Controls
 {
-    public class ListItemCollection : CollectionBase
+    public class AccordionPaneCollection : CollectionBase
     {
         protected Control Parent = null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListItemCollection" /> class.
+        /// Initializes a new instance of the <see cref="AccordianCollection" /> class.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        public ListItemCollection(Control parent)
+        public AccordionPaneCollection(Control parent)
         {
             Parent = parent;
         }
@@ -35,20 +35,20 @@ namespace Twitter.Web.Controls
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public ListItem this[int index]
+        public AccordionPane this[int index]
         {
-            get { return (ListItem)List[index]; }
+            get { return (AccordionPane)List[index]; }
             set { List[index] = value; }
         }
 
         /// <summary>
-        /// Adds the specified item.
+        /// Adds the specified tab.
         /// </summary>
-        /// <param name="item">The item.</param>
-        public void Add(ListItem item)
+        /// <param name="Tab">The tab.</param>
+        public void Add(AccordionPane Pane)
         {
-            List.Add(item);
-            Parent.Controls.Add(item);
+            List.Add(Pane);
+            Parent.Controls.Add(Pane);
         }
 
         /// <summary>
@@ -56,30 +56,30 @@ namespace Twitter.Web.Controls
         /// </summary>
         /// <param name="index">The index.</param>
         /// <param name="item">The item.</param>
-        public void Insert(int index, ListItem item)
+        public void Insert(int index, TabPage item)
         {
             List.Insert(index, item);
         }
 
         /// <summary>
-        /// Removes the specified item.
+        /// Removes the specified tab.
         /// </summary>
-        /// <param name="item">The item.</param>
-        public void Remove(ListItem item)
+        /// <param name="Tab">The tab.</param>
+        public void Remove(AccordionPane Pane)
         {
-            List.Remove(item);
+            List.Remove(Pane);
         }
 
         /// <summary>
-        /// Determines whether [contains] [the specified item].
+        /// Determines whether [contains] [the specified tab].
         /// </summary>
-        /// <param name="item">The item.</param>
+        /// <param name="Tab">The tab.</param>
         /// <returns>
-        ///   <c>true</c> if [contains] [the specified item]; otherwise, <c>false</c>.
+        ///   <c>true</c> if [contains] [the specified tab]; otherwise, <c>false</c>.
         /// </returns>
-        public bool Contains(ListItem item)
+        public bool Contains(AccordionPane Pane)
         {
-            return List.Contains(item);
+            return List.Contains(Pane);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Twitter.Web.Controls
         /// </summary>
         /// <param name="item">The item.</param>
         /// <returns></returns>
-        public int IndexOf(ListItem item)
+        public int IndexOf(AccordionPane item)
         {
             return List.IndexOf(item);
         }
@@ -97,9 +97,10 @@ namespace Twitter.Web.Controls
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="index">The index.</param>
-        public void CopyTo(ListItem[] array, int index)
+        public void CopyTo(AccordionPane[] array, int index)
         {
             List.CopyTo(array, index);
         }
+
     }
 }

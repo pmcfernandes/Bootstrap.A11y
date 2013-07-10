@@ -1,6 +1,6 @@
-﻿// FieldSet.cs
+﻿// AccordionPane.cs
 
-// Copyright (C) 2013 Pedro Fernandes
+// Copyright (C) 2013 Francois Viljoen
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -19,16 +19,55 @@ using System.Web.UI.WebControls;
 
 namespace Twitter.Web.Controls
 {
-    [ToolboxData("<{0}:FieldSet runat=server></{0}:FieldSet>")]
+    [ToolboxData("<{0}:AccordionPane runat=server id=AccordionPane1></{0}:AccordionPane>")]
     [ParseChildren(true, "Content")]
-    public class FieldSet : WebControl, INamingContainer
-    {        
+    [ToolboxItem(false)]
+    public class AccordionPane : WebControl, INamingContainer
+    {
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="FieldSet" /> class.
+        /// Initializes a new instance of the <see cref="AccordionPane"/> class.
         /// </summary>
-        public FieldSet()
+        public AccordionPane()
         {
-            this.Legend = "";
+
+        }
+
+        #region CssClass method
+
+        string sCssClass = "";
+
+        /// <summary>
+        /// Adds the CSS class.
+        /// </summary>
+        /// <param name="cssClass">The CSS class.</param>
+        private void AddCssClass(string cssClass)
+        {
+            if (String.IsNullOrEmpty(this.sCssClass))
+            {
+                this.sCssClass = cssClass;
+            }
+            else
+            {
+                this.sCssClass += " " + cssClass;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets or sets the header.
+        /// </summary>
+        /// <value>
+        /// The header.
+        /// </value>
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TemplateContainer(typeof(AccordionContentHeaderPanel))]
+        [TemplateInstance(TemplateInstance.Single)]
+        public virtual ITemplate Header
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -38,7 +77,7 @@ namespace Twitter.Web.Controls
         /// The content.
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TemplateContainer(typeof(FieldSet))]
+        [TemplateContainer(typeof(AccordionContentPanel))]
         [TemplateInstance(TemplateInstance.Single)]
         public virtual ITemplate Content
         {
@@ -47,26 +86,28 @@ namespace Twitter.Web.Controls
         }
 
         /// <summary>
-        /// Gets or sets the legend.
-        /// </summary>
-        /// <value>
-        /// The legend.
-        /// </value>
-        [Category("Appearance")]
-        [DefaultValue("")]
-        public string Legend
-        {
-            get { return (string)ViewState["Legend"]; }
-            set { ViewState["Legend"] = value; }
-        }
-
-        /// <summary>
         /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Fieldset);
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+        }
+
+        /// <summary>
+        /// Renders the control to the specified HTML writer.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void Render(HtmlTextWriter writer)
+        {
+            this.AddCssClass(this.CssClass);
+            this.AddCssClass("accordion-group");
+
+            //writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
+            //writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
+            if (!String.IsNullOrEmpty(this.sCssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, this.sCssClass);
+
+            base.Render(writer);
         }
 
         /// <summary>
@@ -79,27 +120,11 @@ namespace Twitter.Web.Controls
         }
 
         /// <summary>
-        /// Renders the control to the specified HTML writer.
-        /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        protected override void Render(HtmlTextWriter writer)
-        {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            if (!String.IsNullOrEmpty(this.CssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);
-            if (!String.IsNullOrEmpty(this.Width.ToString())) writer.AddStyleAttribute(HtmlTextWriterStyle.Width, this.Width.ToString());
-            if (!String.IsNullOrEmpty(this.Height.ToString())) writer.AddStyleAttribute(HtmlTextWriterStyle.Height, this.Height.ToString());
-
-            base.Render(writer);
-        }
-
-        /// <summary>
         /// Renders the contents.
         /// </summary>
         /// <param name="output">The output.</param>
         protected override void RenderContents(HtmlTextWriter output)
-        {            
-            output.Write(String.Format("<legend>{0}</legend>", this.Legend));
+        {
             this.RenderChildren(output);
         }
 
@@ -121,11 +146,25 @@ namespace Twitter.Web.Controls
         /// </summary>
         protected override void CreateChildControls()
         {
-            var container = new Control();
-            this.Content.InstantiateIn(container);
-
+            var header = new AccordionContentHeaderPanel();
+            this.Header.InstantiateIn(header);
             this.Controls.Clear();
+            this.Controls.Add(header);
+
+            /*if (this.TabIndex == 0)
+            {
+                var container = new AccordionContentPanel(true);
+                this.Content.InstantiateIn(container);
+                this.Controls.Add(container);
+            }
+            else
+            {*/
+            var container = new AccordionContentPanel();
+            this.Content.InstantiateIn(container);
             this.Controls.Add(container);
+            //}
+
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// ${FileName}
+﻿// Image.cs
 
 // Copyright (C) 2013 Pedro Fernandes
 

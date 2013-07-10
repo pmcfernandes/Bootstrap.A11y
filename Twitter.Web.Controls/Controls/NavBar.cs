@@ -1,4 +1,4 @@
-﻿// ${FileName}
+﻿// NavBar.cs
 
 // Copyright (C) 2013 Pedro Fernandes
 
@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
