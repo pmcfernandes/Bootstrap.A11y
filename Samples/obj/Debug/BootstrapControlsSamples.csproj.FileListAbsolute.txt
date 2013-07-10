@@ -1,7 +1,0 @@
-C:\Projectos\BootstrapControls\Samples\bin\Adminer.dll
-C:\Projectos\BootstrapControls\Samples\bin\Adminer.pdb
-C:\Projectos\BootstrapControls\Samples\bin\Twitter.Web.Controls.dll
-C:\Projectos\BootstrapControls\Samples\bin\Twitter.Web.Controls.pdb
-C:\Projectos\BootstrapControls\Samples\obj\Debug\BootstrapControlsSamples.csprojResolveAssemblyReference.cache
-C:\Projectos\BootstrapControls\Samples\obj\Debug\Adminer.dll
-C:\Projectos\BootstrapControls\Samples\obj\Debug\Adminer.pdb
