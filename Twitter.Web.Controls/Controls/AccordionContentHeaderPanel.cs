@@ -1,6 +1,6 @@
-﻿// PageHeader.cs
+﻿// AccordionContentHeaderPanel.cs
 
-// Copyright (C) 2013 Pedro Fernandes
+// Copyright (C) 2013 Francois Viljoen
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,15 +13,21 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using System.ComponentModel;
 namespace Twitter.Web.Controls
 {
-    [ToolboxData("<{0}:PageHeader runat=server />")]
-    public class PageHeader : WebControl, INamingContainer
+    [ToolboxItem(false)]
+    public class AccordionContentHeaderPanel : WebControl, INamingContainer
     {
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccordionContentHeaderPanel"/> class.
+        /// </summary>
+        public AccordionContentHeaderPanel()
+        {
+        }
 
         #region CssClass method
 
@@ -45,33 +51,6 @@ namespace Twitter.Web.Controls
 
         #endregion
 
-        /// <summary>
-        /// Gets or sets the title.
-        /// </summary>
-        /// <value>
-        /// The title.
-        /// </value>
-        [Category("Appearance")]
-        [DefaultValue("")]
-        public string Title
-        {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the sub title.
-        /// </summary>
-        /// <value>
-        /// The sub title.
-        /// </value>
-        [Category("Appearance")]
-        [DefaultValue("")]
-        public string SubTitle
-        {
-            get { return (string)ViewState["SubTitle"]; }
-            set { ViewState["SubTitle"] = value; }
-        }
 
         /// <summary>
         /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
@@ -80,6 +59,24 @@ namespace Twitter.Web.Controls
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
+        }
+
+        /// <summary>
+        /// Renders the control to the specified HTML writer.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void Render(HtmlTextWriter writer)
+        {
+            this.AddCssClass(this.CssClass);
+            this.AddCssClass("accordion-heading");
+            //<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse1">
+            //writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
+            //writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
+            if (!String.IsNullOrEmpty(this.sCssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, this.sCssClass);
+
+
+
+            base.Render(writer);
         }
 
         /// <summary>
@@ -92,39 +89,29 @@ namespace Twitter.Web.Controls
         }
 
         /// <summary>
-        /// Renders the control to the specified HTML writer.
-        /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        protected override void Render(HtmlTextWriter writer)
-        {
-            this.AddCssClass(this.CssClass);
-            this.AddCssClass("page-header");
-
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            if (!String.IsNullOrEmpty(this.sCssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, this.sCssClass);
-
-            base.Render(writer);
-        }
-
-        /// <summary>
         /// Renders the contents.
         /// </summary>
         /// <param name="output">The output.</param>
         protected override void RenderContents(HtmlTextWriter output)
         {
-            output.RenderBeginTag(HtmlTextWriterTag.H1);
-            output.Write(this.Title);
-            output.RenderEndTag();
-
-            if (!String.IsNullOrEmpty(this.SubTitle))
-            {
-                output.RenderBeginTag(HtmlTextWriterTag.Small);
-                output.Write(this.SubTitle);
-                output.RenderEndTag();
-            }
-
-            this.RenderChildren(output);
+            output.Write("<a class='accordion-toggle' data-toggle='collapse' data-parent='#" + this.Parent.Parent.ClientID + "' href='#" + this.Parent.ClientID + "'>");
+            base.RenderContents(output);
+            output.Write("</a>");
         }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
+        protected override void OnInit(System.EventArgs e)
+        {
+            base.OnInit(e);
+
+            // Initialize all child controls.
+            this.CreateChildControls();
+            this.ChildControlsCreated = true;
+        }
+
+
     }
 }

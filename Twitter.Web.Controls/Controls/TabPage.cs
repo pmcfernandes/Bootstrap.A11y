@@ -1,4 +1,4 @@
-﻿// ${FileName}
+﻿// TabPage.cs
 
 // Copyright (C) 2013 Pedro Fernandes
 

@@ -1,4 +1,4 @@
-﻿// ${FileName}
+﻿// Window.cs
 
 // Copyright (C) 2013 Pedro Fernandes
 

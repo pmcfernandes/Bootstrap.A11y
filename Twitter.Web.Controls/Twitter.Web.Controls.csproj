@@ -42,9 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
+    <Compile Include="Controls\AccordionContentHeaderPanel.cs" />
+    <Compile Include="Controls\AccordionContentPanel.cs" />
+    <Compile Include="Controls\AccordionControl.cs" />
+    <Compile Include="Controls\AccordionPane.cs" />
+    <Compile Include="Controls\AccordionPaneCollection.cs" />
     <Compile Include="Controls\Alert.cs" />
     <Compile Include="Controls\Badge.cs" />
     <Compile Include="Controls\BoundColumn.cs" />

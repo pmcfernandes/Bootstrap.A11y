@@ -1,0 +1,5 @@
+C:\Projectos\BootstrapControls\Twitter.Web.Controls\obj\Debug\Twitter.Web.Controls.csprojResolveAssemblyReference.cache
+C:\Projectos\Bin\Twitter.Web.Controls.dll
+C:\Projectos\Bin\Twitter.Web.Controls.pdb
+C:\Projectos\BootstrapControls\Twitter.Web.Controls\obj\Debug\Twitter.Web.Controls.dll
+C:\Projectos\BootstrapControls\Twitter.Web.Controls\obj\Debug\Twitter.Web.Controls.pdb
