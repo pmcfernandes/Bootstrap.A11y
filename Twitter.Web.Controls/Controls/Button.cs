@@ -1,4 +1,4 @@
-﻿// Button.cs
+﻿// ${FileName}
 
 // Copyright (C) 2013 Pedro Fernandes
 
