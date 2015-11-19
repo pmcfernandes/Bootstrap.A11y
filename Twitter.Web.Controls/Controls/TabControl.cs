@@ -58,7 +58,7 @@ namespace Twitter.Web.Controls
         public TabControl()
         {
             _Tabs = new TabCollection(this);
-            this.ActiveTabPage = 0;
+            this.ActiveTabPageIndex = 0;
             this.Pills = false;
         }
 
@@ -83,10 +83,10 @@ namespace Twitter.Web.Controls
         /// </value>
         [Category("Appearance")]
         [DefaultValue(true)]
-        public int ActiveTabPage
+        public int ActiveTabPageIndex
         {
-            get { return (int)ViewState["ActiveTabPage"]; }
-            set { ViewState["ActiveTabPage"] = value; }
+            get { return (int)ViewState["ActiveTabPageIndex"]; }
+            set { ViewState["ActiveTabPageIndex"] = value; }
         }
 
         [Category("Appearance")]

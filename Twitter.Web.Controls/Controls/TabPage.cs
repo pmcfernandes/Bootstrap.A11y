@@ -79,7 +79,7 @@ namespace Twitter.Web.Controls
                 strCssClass = strCssClass.Trim();
             }
 
-            //strCssClass += (i == this.ActiveTabPage ? " active" : "");
+            //strCssClass += (i == ((TabControl)this.Parent).ActiveTabPageIndex ? " active" : "");
 
             if (!String.IsNullOrEmpty(strCssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass);
             writer.RenderBeginTag(HtmlTextWriterTag.Li);

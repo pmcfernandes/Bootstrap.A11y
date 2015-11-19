@@ -27,7 +27,7 @@ namespace Twitter.Web.Controls
         Polaroid = 3
     }
 
-    [ToolboxData("<{0}:Button runat=server />")]
+    [ToolboxData("<{0}:Image runat=server />")]
     [DefaultProperty("ImageUrl")]
     public class Image : System.Web.UI.WebControls.Image
     {

@@ -75,7 +75,7 @@ namespace Twitter.Web.Controls
         /// The footer.
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TemplateContainer(typeof(Window))]
+        [TemplateContainer(typeof(Button))]
         [TemplateInstance(TemplateInstance.Single)]
         public virtual ITemplate Menu
         {
