@@ -1,0 +1,65 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Adminer.Site" %>
+<%@ Register Assembly="Twitter.Web.Controls" Namespace="Twitter.Web.Controls" TagPrefix="twc" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="/content/js/bootstrap.min.js"></script>
+     <!-- Bootstrap -->
+    <link href="/content/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form2" runat="server">
+        <twc:NavBar ID="NavBar1" runat="server" Title="freweb.net" Position="Top">
+            <Content>
+                <twc:DropdownMenu runat="server" RightToLeft="true">
+                    <asp:ListItem Text="Home" Selected="True"></asp:ListItem>
+                    <asp:ListItem Text="Dashboard" Enabled="false"></asp:ListItem>
+                </twc:DropdownMenu>
+            </Content>
+        </twc:NavBar>
+        <div class="container-fluid">            
+            <div class="row-fluid">
+                <div class="span2" style="margin-top:20px;">
+                    <twc:NavList ID="NavList1" runat="server">
+                        <Items>
+                            <twc:NavListItem Header="true" Text="Administração" Icon="wrench" />
+                            <twc:NavListItem Text="Utilizadores" />
+                            <twc:NavListItem Text="Grupos" />
+                            <twc:NavListItem Text="Parametros" />
+                            <twc:NavListItem Header="true" Text="Conteúdos" Icon="filter" />
+                            <twc:NavListItem Text="Categorias" />
+                            <twc:NavListItem Text="Artigos" />
+                            <twc:NavListItem Text="Noticias" />
+                            <twc:NavListItem Text="Anexos" />
+                            <twc:NavListItem Text="Imagens" />
+                            <twc:NavListItem Text="Menus" />
+                            <twc:NavListItem Text="Agenda" />
+                            <twc:NavListItem Header="true" Text="Votações" Icon="road" />
+                            <twc:NavListItem Text="Perguntas" />
+                            <twc:NavListItem Text="Respostas" />
+                            <twc:NavListItem Header="true" Text="Executivos" Icon="user" />
+                            <twc:NavListItem Text="Executivos" />
+                            <twc:NavListItem Text="Partidos" />
+                            <twc:NavListItem Text="Cargos" />
+                        </Items>
+                    </twc:NavList>
+                </div>
+                <div class="span10">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                    
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+
+   
+
+      

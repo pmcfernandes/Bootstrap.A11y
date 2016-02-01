@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapControlsSamples", "Samples\BootstrapControlsSamples.csproj", "{A221EFD4-E682-4ECB-9AD2-50A5EFB1FFA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapControlsSamples", "Samples.v2\BootstrapControlsSamples.csproj", "{A221EFD4-E682-4ECB-9AD2-50A5EFB1FFA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter.Web.Controls", "Twitter.Web.Controls\Twitter.Web.Controls.csproj", "{C0BA657E-C372-4EC9-9160-C0A555D5D37A}"
 EndProject

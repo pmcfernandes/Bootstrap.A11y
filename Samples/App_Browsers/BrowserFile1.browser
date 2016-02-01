@@ -1,0 +1,12 @@
+﻿<!--
+    You can find existing browser definitions at
+    <windir>\Microsoft.NET\Framework\<ver>\CONFIG\Browsers
+-->
+<browsers>
+  <browser refID="Default">
+    <controlAdapters>
+        <adapter controlType="System.Web.UI.WebControls.TextBox" adapterType="Tie.Controls.Bootstrap.Adapters.InputAdapter, Tie.Controls.Bootstrap" />
+        <adapter controlType="System.Web.UI.WebControls.DropDownList" adapterType="Tie.Controls.Bootstrap.Adapters.InputAdapter, Tie.Controls.Bootstrap" />
+    </controlAdapters>
+  </browser>
+</browsers>

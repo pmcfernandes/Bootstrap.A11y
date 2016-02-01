@@ -1,6 +1,8 @@
-BootstrapControls.v12.suo
-Twitter.Web.Controls/Twitter.Web.Controls.csproj.vspscc
-Samples/obj/
-Samples/bin/
-Twitter.Web.Controls/obj/
-Twitter.Web.Controls/bin/
+*.suo
+*.user
+bin/
+obj/
+packages/
+
+
+!packages/repositories.config

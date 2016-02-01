@@ -1,65 +1,74 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Adminer.Site" %>
-<%@ Register Assembly="Twitter.Web.Controls" Namespace="Twitter.Web.Controls" TagPrefix="twc" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Samples.Site" %>
+<%@ Register Assembly="Tie.Controls.Bootstrap" Namespace="Tie.Controls.Bootstrap" TagPrefix="twt" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1" runat="server">
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="/content/js/bootstrap.min.js"></script>
-     <!-- Bootstrap -->
-    <link href="/content/css/bootstrap.min.css" rel="stylesheet" media="screen" />
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Boostrap 3 for Webforms</title>
+    <link rel="stylesheet" type="text/css" href="<%= ResolveUrl("~/Content/bootstrap.min.css") %>" />
+    <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery-1.9.1.js") %>"></script>
+    <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
-    <form id="form2" runat="server">
-        <twc:NavBar ID="NavBar1" runat="server" Title="freweb.net" Position="Top">
-            <Content>
-                <twc:DropdownMenu runat="server" RightToLeft="true">
-                    <asp:ListItem Text="Home" Selected="True"></asp:ListItem>
-                    <asp:ListItem Text="Dashboard" Enabled="false"></asp:ListItem>
-                </twc:DropdownMenu>
-            </Content>
-        </twc:NavBar>
-        <div class="container-fluid">            
-            <div class="row-fluid">
-                <div class="span2" style="margin-top:20px;">
-                    <twc:NavList ID="NavList1" runat="server">
-                        <Items>
-                            <twc:NavListItem Header="true" Text="Administração" Icon="wrench" />
-                            <twc:NavListItem Text="Utilizadores" />
-                            <twc:NavListItem Text="Grupos" />
-                            <twc:NavListItem Text="Parametros" />
-                            <twc:NavListItem Header="true" Text="Conteúdos" Icon="filter" />
-                            <twc:NavListItem Text="Categorias" />
-                            <twc:NavListItem Text="Artigos" />
-                            <twc:NavListItem Text="Noticias" />
-                            <twc:NavListItem Text="Anexos" />
-                            <twc:NavListItem Text="Imagens" />
-                            <twc:NavListItem Text="Menus" />
-                            <twc:NavListItem Text="Agenda" />
-                            <twc:NavListItem Header="true" Text="Votações" Icon="road" />
-                            <twc:NavListItem Text="Perguntas" />
-                            <twc:NavListItem Text="Respostas" />
-                            <twc:NavListItem Header="true" Text="Executivos" Icon="user" />
-                            <twc:NavListItem Text="Executivos" />
-                            <twc:NavListItem Text="Partidos" />
-                            <twc:NavListItem Text="Cargos" />
-                        </Items>
-                    </twc:NavList>
-                </div>
-                <div class="span10">
-                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
-                    
-                </div>
-            </div>
-        </div>
+    <form id="form1" runat="server">        
+        <twt:NavBar ID="NavBar1" runat="server" Inverted="true" Position="Top" Title="Bootstrap">
+            <Brand>
+                <twt:Hamburger ID="Hamburger1" runat="server" Text="Brand" />
+            </Brand>
+            <LeftContent>
+                <twt:Menu ID="Menu1" runat="server">
+                    <Items>
+                        <twt:ListItem Text="Action">
+                            <Items>
+                                <twt:ListItem Text="Action"></twt:ListItem>
+                                <twt:ListItem Text="Another Action"></twt:ListItem>
+                                <twt:ListItem Text="Something else here" Enabled="false"></twt:ListItem>
+                                <twt:ListItem Text="Separated link"></twt:ListItem>
+                            </Items>
+                        </twt:ListItem>
+                        <twt:ListItem Text="Another Action"></twt:ListItem>
+                        <twt:ListItem Text="Something else here" Enabled="false"></twt:ListItem>
+                        <twt:ListItem Text="Separated link"></twt:ListItem>
+                    </Items>
+                </twt:Menu>
+            </LeftContent>
+            <RightContent>
+                <twt:Menu ID="Menu2" runat="server">
+                    <Items>
+                        <twt:ListItem Text="Another Action"></twt:ListItem>
+                        <twt:ListItem Text="Action">
+                            <Items>
+                                <twt:ListItem Text="Action"></twt:ListItem>
+                                <twt:ListItem Text="Another Action"></twt:ListItem>
+                                <twt:ListItem Text="Something else here" Enabled="false"></twt:ListItem>
+                                <twt:ListItem Text="Separated link"></twt:ListItem>
+                            </Items>
+                        </twt:ListItem>
+                    </Items>
+                </twt:Menu>
+            </RightContent>
+        </twt:NavBar>
+        <twt:Container ID="Container1" runat="server" Fluid="True">
+            <Rows>
+                <twt:Row ID="Row2" runat="server">
+                    <Columns>
+                        <twt:Column ID="Column2" runat="server" Large="8">
+                            <Content>
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+                            </Content>
+                        </twt:Column>
+                        <twt:Column ID="Column3" runat="server" Large="4">
+                            <Content>
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server" />
+                            </Content>
+                        </twt:Column>                        
+                    </Columns>
+                </twt:Row>
+            </Rows>
+        </twt:Container>        
+        <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/bootstrap.min.js") %>"></script>               
     </form>
-</body>
+    </body>
 </html>
-
-
-   
-
-      
