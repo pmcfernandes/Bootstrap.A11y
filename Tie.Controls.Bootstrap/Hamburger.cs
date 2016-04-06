@@ -70,8 +70,13 @@ namespace Tie.Controls.Bootstrap
 
             writer.AddAttribute(HtmlTextWriterAttribute.Type, "button");
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-            writer.AddAttribute("data-toggle", "data-toggle");
             writer.AddAttribute("aria-expanded", "false");
+            writer.AddAttribute("data-toggle", "collapse");
+
+            if (this.NamingContainer is NavBar)
+            {
+                writer.AddAttribute("data-target", "#" + ((NavBar)this.NamingContainer).ClientID + "_bs-navbar-collapse");
+            }
 
             writer.RenderBeginTag(HtmlTextWriterTag.Button);
         }

@@ -206,12 +206,16 @@ namespace Tie.Controls.Bootstrap
                 this.Controls.Add(brandItem);
             }
 
+            System.Web.UI.WebControls.Panel panel = new System.Web.UI.WebControls.Panel();
+            panel.CssClass = "collapse navbar-collapse";
+            panel.ID = "bs-navbar-collapse";
+
             if (this.LeftContent != null)
             {
                 var leftItem = new Control();
                 leftItem.ID = "navbar-left";
                 this.LeftContent.InstantiateIn(leftItem);
-                this.Controls.Add(leftItem);
+                panel.Controls.Add(leftItem);
             }
 
             if (this.RightContent != null)
@@ -219,8 +223,10 @@ namespace Tie.Controls.Bootstrap
                 var rightItem = new Control();
                 rightItem.ID = "navbar-right";
                 this.RightContent.InstantiateIn(rightItem);
-                this.Controls.Add(rightItem);
+                panel.Controls.Add(rightItem);
             }
+
+            this.Controls.Add(panel);
         }
 
         /// <summary>
