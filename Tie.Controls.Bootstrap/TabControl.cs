@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Security.Permissions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -40,7 +41,7 @@ namespace Tie.Controls.Bootstrap
     [ToolboxData("<{0}:TabControl runat=server></{0}:TabControl>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [ParseChildren(true, "TabPages")]
-    [PersistChildren(false)]
+    [PersistChildren(true)]
     public class TabControl : WebControl, INamingContainer, IPostBackDataHandler
     {
         public event EventHandler<TabPageChangedEventArgs> TabPageChanged;
@@ -68,6 +69,7 @@ namespace Tie.Controls.Bootstrap
         /// </value>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] 
         [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
         public TabCollection TabPages
         {
             get { return _Tabs; }
@@ -178,7 +180,12 @@ namespace Tie.Controls.Bootstrap
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass.Trim());
                 writer.AddAttribute("role", "tabpanel");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                tabPage.Container.RenderControl(writer);
+
+                foreach (Control ctrl in tabPage.Controls)
+                {
+                    ctrl.RenderControl(writer);
+                }
+
                 writer.RenderEndTag();
             }
 
@@ -230,8 +237,8 @@ namespace Tie.Controls.Bootstrap
 
                 writer.AddAttribute("role", "presentation");
                 writer.RenderBeginTag(HtmlTextWriterTag.Li);
-
                 tabPage.RenderControl(writer);
+
                 writer.RenderEndTag();
             }
         }
@@ -289,6 +296,8 @@ namespace Tie.Controls.Bootstrap
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(EventArgs e)
         {
+            Page.RegisterRequiresControlState(this);
+
             if (this.AutoPostBack)
             {
                 this.Page.RegisterRequiresPostBack(this);
@@ -344,5 +353,6 @@ namespace Tie.Controls.Bootstrap
                 TabPageChanged(this, new TabPageChangedEventArgs() { Index = this.ActiveTabPage });
             }
         }
+
     }
 }

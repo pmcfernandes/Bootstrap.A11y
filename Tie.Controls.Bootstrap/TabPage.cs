@@ -14,7 +14,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Security.Permissions;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Tie.Controls.Bootstrap
 {
@@ -24,10 +26,10 @@ namespace Tie.Controls.Bootstrap
     [ToolboxData("<{0}:TabPage runat=server></{0}:TabPage>")]
     [ToolboxItem(false)]
     [ParseChildren(true, "Content")]
-    [PersistChildren(true)]
+    [PersistChildren(false)]
     public class TabPage : Control, INamingContainer
     {
-        private Control container;
+        private PlaceHolder container;
         private string strPostBackScript;
 
         /// <summary>
@@ -48,12 +50,45 @@ namespace Tie.Controls.Bootstrap
         /// The content.
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TemplateContainer(typeof(TabPage))]
         [TemplateInstance(TemplateInstance.Single)]
+        [TemplateContainer(typeof(TabPage))]
         public virtual ITemplate Content
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets or sets the container.
+        /// </summary>
+        /// <value>
+        /// The container.
+        /// </value>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public PlaceHolder Container
+        {
+            get
+            {
+                this.EnsureChildControls();
+                return this.container;
+            }
+            set
+            {
+                this.container = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="T:System.Web.UI.ControlCollection" /> object that represents the child controls for a specified server control in the UI hierarchy.
+        /// </summary>
+        public override ControlCollection Controls
+        {
+            get
+            {
+                this.EnsureChildControls();
+                return base.Controls;
+            }
         }
 
         /// <summary>
@@ -99,7 +134,6 @@ namespace Tie.Controls.Bootstrap
             set;
         }
 
-
         /// <summary>
         /// Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter" /> object, which writes the content to be rendered on the client.
         /// </summary>
@@ -121,8 +155,6 @@ namespace Tie.Controls.Bootstrap
             writer.RenderBeginTag(HtmlTextWriterTag.A);
             writer.Write(this.Title);
             writer.RenderEndTag();
-
-            base.Render(writer);
         }
 
         /// <summary>
@@ -130,8 +162,9 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
-        {
+        {            
             base.OnInit(e);
+            Page.RegisterRequiresControlState(this);
 
             this.CreateChildControls();
             this.ChildControlsCreated = true;
@@ -142,20 +175,14 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         protected override void CreateChildControls()
         {
-            this.container = new Control();
-            this.Content.InstantiateIn(container);
-        }
+            this.Controls.Clear();
 
-        /// <summary>
-        /// Gets or sets the container.
-        /// </summary>
-        /// <value>
-        /// The container.
-        /// </value>
-        internal Control Container
-        {
-            get { return this.container; }
-            set { this.container = value; }
+            if (this.Content != null)
+            {
+                this.container = new PlaceHolder();
+                this.Content.InstantiateIn(this.container);
+                this.Controls.Add(this.container);
+            }
         }
 
     }
