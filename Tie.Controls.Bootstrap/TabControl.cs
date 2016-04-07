@@ -50,6 +50,7 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="TabControl" /> class.
         /// </summary>
         public TabControl()
+            : base()
         {
             _Tabs = new TabCollection(this);
             this.ActiveTabPage = 0;

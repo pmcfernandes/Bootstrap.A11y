@@ -34,6 +34,7 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="TabPage" /> class.
         /// </summary>
         public TabPage()
+            : base()
         {
             this.Enabled = true;
             this.Title = this.ID;
@@ -47,7 +48,7 @@ namespace Tie.Controls.Bootstrap
         /// The content.
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TemplateContainer(typeof(FieldSet))]
+        [TemplateContainer(typeof(TabPage))]
         [TemplateInstance(TemplateInstance.Single)]
         public virtual ITemplate Content
         {

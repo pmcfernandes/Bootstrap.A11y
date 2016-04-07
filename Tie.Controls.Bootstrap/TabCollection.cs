@@ -27,6 +27,7 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         /// <param name="parent">The parent.</param>
         public TabCollection(Control parent)
+            : base()
         {
             Parent = parent;
         }
