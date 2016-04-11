@@ -51,7 +51,7 @@ namespace Tie.Controls.Bootstrap
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [TemplateInstance(TemplateInstance.Single)]
-        [TemplateContainer(typeof(TabPage))]
+        [TemplateContainer(typeof(TabPage))]      
         public virtual ITemplate Content
         {
             get;
@@ -148,8 +148,8 @@ namespace Tie.Controls.Bootstrap
                 writer.AddAttribute(HtmlTextWriterAttribute.Onclick, strPostBackScript);
             }
 
-            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.ID);
-            writer.AddAttribute("aria-controls", this.ID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.ClientID);
+            writer.AddAttribute("aria-controls", this.ClientID);
             writer.AddAttribute("role", "tab");
             writer.AddAttribute("data-toggle", "tab");
             writer.RenderBeginTag(HtmlTextWriterTag.A);
@@ -164,8 +164,6 @@ namespace Tie.Controls.Bootstrap
         protected override void OnInit(System.EventArgs e)
         {            
             base.OnInit(e);
-            Page.RegisterRequiresControlState(this);
-
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }

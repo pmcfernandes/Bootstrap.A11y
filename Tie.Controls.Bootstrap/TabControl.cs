@@ -41,7 +41,7 @@ namespace Tie.Controls.Bootstrap
     [ToolboxData("<{0}:TabControl runat=server></{0}:TabControl>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [ParseChildren(true, "TabPages")]
-    [PersistChildren(true)]
+    [PersistChildren(false)]
     public class TabControl : WebControl, INamingContainer, IPostBackDataHandler
     {
         public event EventHandler<TabPageChangedEventArgs> TabPageChanged;
@@ -168,7 +168,6 @@ namespace Tie.Controls.Bootstrap
             for (int i = 0; i < this.TabPages.Count; i++)
             {
                 TabPage tabPage = this.TabPages[i];
-                tabPage.ID = this.ID + "_" + "tab-" + (i + 1);
 
                 string strCssClass = "tab-pane fade ";
                 if (this.ActiveTabPage == i)
@@ -176,7 +175,7 @@ namespace Tie.Controls.Bootstrap
                     strCssClass += "in active";
                 }
 
-                writer.AddAttribute(HtmlTextWriterAttribute.Id, tabPage.ID);
+                writer.AddAttribute(HtmlTextWriterAttribute.Id, tabPage.ClientID);
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass.Trim());
                 writer.AddAttribute("role", "tabpanel");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -215,7 +214,6 @@ namespace Tie.Controls.Bootstrap
             for (int i = 0; i < this.TabPages.Count; i++)
             {
                 TabPage tabPage = this.TabPages[i];
-                tabPage.ID = this.ID + "_" + "tab-" + (i + 1);
                 tabPage.Index = i;
 
                 string strCssClass = "";
@@ -240,19 +238,6 @@ namespace Tie.Controls.Bootstrap
                 tabPage.RenderControl(writer);
 
                 writer.RenderEndTag();
-            }
-        }
-
-        /// <summary>
-        /// Notifies the server control that an element, either XML or HTML, was parsed, and adds the element to the server control's <see cref="T:System.Web.UI.ControlCollection" /> object.
-        /// </summary>
-        /// <param name="obj">An <see cref="T:System.Object" /> that represents the parsed element.</param>
-        protected override void AddParsedSubObject(object obj)
-        {
-            if (obj is TabPage)
-            {
-                TabPages.Add((TabPage)obj);
-                return;
             }
         }
 
@@ -296,14 +281,14 @@ namespace Tie.Controls.Bootstrap
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(EventArgs e)
         {
-            Page.RegisterRequiresControlState(this);
-
             if (this.AutoPostBack)
             {
                 this.Page.RegisterRequiresPostBack(this);
             }
 
             base.OnInit(e);
+            this.CreateChildControls();
+            this.ChildControlsCreated = true;
         }
 
         /// <summary>
