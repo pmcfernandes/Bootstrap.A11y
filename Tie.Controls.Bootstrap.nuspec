@@ -2,18 +2,30 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Tie.Controls.Bootstrap</id>
-        <version>1.0.2</version>
+        <version>1.0.6</version>
         <authors>Pedro Fernandes</authors>
         <owners>Pedro Fernandes</owners>
         <licenseUrl>https://raw.githubusercontent.com/Patreo/Tie.Controls.Bootstrap/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/Patreo/Tie.Controls.Bootstrap</projectUrl>
         <iconUrl>http://getbootstrap.com/apple-touch-icon.png</iconUrl>
-        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Webforms Controls for use with Twitter Bootstrap 3.0</description>
-        <releaseNotes>Some Issues Fixes.
-            Added Support for multiple framework versions.
-            Table support.</releaseNotes>
-        <copyright>Copyright 2015</copyright>
+        <releaseNotes>1.0.6 
+- Fixed Tab issue related with postback persistent 
+
+1.0.5 
+- Fixed Navbar issue with Hamburger support 
+
+1.0.4 
+- Changed ListItem Redering 
+- PageHeader SubText fixed 
+- GridViewAdapter issue fixed 
+- Button PostBack issue fixed 
+
+1.0.3 
+- Added Support for multiple framework versions. 
+- Table support.</releaseNotes>
+        <copyright>Copyright 2016</copyright>
         <tags>Twitter Bootstrap WebForms Framework2 Framework35 Framework4 Framework45</tags>
         <dependencies>
             <dependency id="bootstrap" version="3.3.5" />
