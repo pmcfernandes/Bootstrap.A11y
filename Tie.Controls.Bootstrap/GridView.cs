@@ -78,6 +78,17 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Raises the <see cref="E:System.Web.UI.Control.PreRender" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+        protected override void OnPreRender(EventArgs e)
+        {
+            this.UseAccessibleHeader = true;
+            this.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+            base.OnPreRender(e);
+        }
+
+        /// <summary>
         /// Renders the Web server control content to the client's browser using the specified <see cref="T:System.Web.UI.HtmlTextWriter" /> object.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> used to render the server control content on the client's browser.</param>
@@ -130,8 +141,9 @@ namespace Tie.Controls.Bootstrap
                 str += " table-striped";
             }
 
-            if (this.GridLines == System.Web.UI.WebControls.GridLines.Both)
+            if (this.GridLines != System.Web.UI.WebControls.GridLines.None)
             {
+                this.GridLines = System.Web.UI.WebControls.GridLines.None;
                 str += " table-bordered";
             }
 
