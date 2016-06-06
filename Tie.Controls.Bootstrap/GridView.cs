@@ -84,7 +84,12 @@ namespace Tie.Controls.Bootstrap
         protected override void OnPreRender(EventArgs e)
         {
             this.UseAccessibleHeader = true;
-            this.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+
+            if (this.HeaderRow != null)
+            {
+                this.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+            }
+            
             base.OnPreRender(e);
         }
 

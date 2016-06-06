@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_4_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -114,11 +114,17 @@
     <Compile Include="..\Tie.Controls.Bootstrap\GridView.cs">
       <Link>GridView.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\GridViewPager.cs">
+      <Link>GridViewPager.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Hamburger.cs">
       <Link>Hamburger.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Heading.cs">
       <Link>Heading.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Helpers\ControlFinder.cs">
+      <Link>Helpers\ControlFinder.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\IListItem.cs">
       <Link>IListItem.cs</Link>
