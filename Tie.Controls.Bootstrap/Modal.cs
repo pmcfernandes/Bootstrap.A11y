@@ -13,7 +13,6 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
@@ -43,7 +42,7 @@ namespace Tie.Controls.Bootstrap
         {
             this.Title = "";
             this.Fade = true;
-            this.Size = ModalSizes.Default;
+            this.Size = ModalSizes.Default;            
         }
 
         /// <summary>
@@ -211,6 +210,7 @@ namespace Tie.Controls.Bootstrap
         protected override void CreateChildControls()
         {
             // Remove any controls
+            this.ClearCachedClientID();
             this.Controls.Clear();
 
             // Add all content to a container.
@@ -218,7 +218,7 @@ namespace Tie.Controls.Bootstrap
             container.CssClass = "modal-body";
             this.Content.InstantiateIn(container);
             this.Controls.Add(container);
-
+            
             if (this.Footer != null)
             {
                 // Add all footer to a container.
@@ -227,6 +227,32 @@ namespace Tie.Controls.Bootstrap
                 this.Footer.InstantiateIn(footer);
                 this.Controls.Add(footer);
             }
+        }
+
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
+        public void Open()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<script type=\"text/javascript\">");
+            sb.AppendLine(" $('#" + this.ClientID  + "').modal('show');");
+            sb.AppendLine("</script>");
+
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ModalScript", sb.ToString(), false);
+        }
+
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
+        public void Close()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<script type=\"text/javascript\">");
+            sb.AppendLine(" $('#" + this.ClientID + "').modal('hide');");
+            sb.AppendLine("</script>");
+
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ModalScript", sb.ToString(), false);
         }
 
         /// <summary>
@@ -245,6 +271,10 @@ namespace Tie.Controls.Bootstrap
             return str.Trim();
         }
 
+        /// <summary>
+        /// Gets the size of the modal.
+        /// </summary>
+        /// <returns></returns>
         private string GetModalSize()
         {
             string str = "";
@@ -266,6 +296,12 @@ namespace Tie.Controls.Bootstrap
             return str.Trim();
         }
 
+        /// <summary>
+        /// Finds the control recursive.
+        /// </summary>
+        /// <param name="rootControl">The root control.</param>
+        /// <param name="controlID">The control identifier.</param>
+        /// <returns></returns>
         internal static Control FindControlRecursive(Control rootControl, string controlID)
         {
             if (rootControl.ID == controlID)
@@ -275,7 +311,7 @@ namespace Tie.Controls.Bootstrap
 
             foreach (Control controlToSearch in rootControl.Controls)
             {
-                Control controlToReturn =  Modal.FindControlRecursive(controlToSearch, controlID);
+                Control controlToReturn = Modal.FindControlRecursive(controlToSearch, controlID);
                 if (controlToReturn != null)
                 {
                     return controlToReturn;
