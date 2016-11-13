@@ -145,7 +145,7 @@ namespace Tie.Controls.Bootstrap
         void ctrl_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             this.GridView.PageIndex = e.NewPageIndex;
-            this.GridView.DataBind();
+           // this.GridView.DataBind();
         }
 
         /// <summary>
