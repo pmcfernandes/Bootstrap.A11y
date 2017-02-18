@@ -16,8 +16,7 @@ namespace Tie.Controls.Bootstrap.Adapters
         /// </summary>
         public GridViewAdapter()
         {
-            this.GridView = ((System.Web.UI.WebControls.GridView)this.Control);
-            this.GridView.GridLines = GridLines.None;
+            
         }
 
         /// <summary>
@@ -26,8 +25,14 @@ namespace Tie.Controls.Bootstrap.Adapters
         /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
         protected override void OnPreRender(EventArgs e)
         {
-            this.GridView.UseAccessibleHeader = true;
-            this.GridView.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+            if (this.Control is GridView)
+            {
+                this.GridView = ((System.Web.UI.WebControls.GridView)this.Control);
+                this.GridView.GridLines = GridLines.None;
+                this.GridView.UseAccessibleHeader = true;
+                this.GridView.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+            }
+
             base.OnPreRender(e);
         }
 
