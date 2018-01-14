@@ -140,12 +140,20 @@ namespace Tie.Controls.Bootstrap
             this.Controls.Add(container);
         }
 
+        /// <summary>
+        /// Builds the style.
+        /// </summary>
+        /// <returns></returns>
         private string BuildStyle()
         {
             string str = "position:relative;padding:15px 15px 15px;margin:0 -15px 15px;margin-right:0;margin-left:0;background-color:#fff;border-style:solid;border-color:#ddd;border-width:1px;border-radius:4px 4px 0 0;box-shadow:none;";
             return str;
         }
 
+        /// <summary>
+        /// Builds the legend style.
+        /// </summary>
+        /// <returns></returns>
         private string BuildLegendStyle()
         {
             string str = "position:relative;top:21px;margin-bottom:25px;width:auto;border-bottom:none;font-size:12px;font-weight:700;color:#959595;text-transform:uppercase;";
