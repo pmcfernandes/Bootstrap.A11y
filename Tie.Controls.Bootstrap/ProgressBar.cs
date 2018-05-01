@@ -171,6 +171,10 @@ namespace Tie.Controls.Bootstrap
             writer.RenderEndTag();
         }
 
+        /// <summary>
+        /// Builds the internal CSS.
+        /// </summary>
+        /// <returns></returns>
         private string BuildInternalCss()
         {
             string str = "progress-bar";

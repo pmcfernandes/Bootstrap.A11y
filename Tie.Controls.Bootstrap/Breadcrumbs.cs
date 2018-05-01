@@ -77,6 +77,9 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         protected override void Render(HtmlTextWriter writer)
         {
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
+
             base.Render(writer);
         }
 

@@ -210,7 +210,9 @@ namespace Tie.Controls.Bootstrap
         protected override void CreateChildControls()
         {
             // Remove any controls
+#if _4_0
             this.ClearCachedClientID();
+#endif
             this.Controls.Clear();
 
             // Add all content to a container.

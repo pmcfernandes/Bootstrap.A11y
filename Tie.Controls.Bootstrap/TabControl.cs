@@ -168,12 +168,13 @@ namespace Tie.Controls.Bootstrap
                 TabPage tabPage = this.TabPages[i];
 
                 string strCssClass = "tab-pane fade ";
+
                 if (this.ActiveTabPage == i)
                 {
                     strCssClass += "in active";
                 }
 
-                writer.AddAttribute(HtmlTextWriterAttribute.Id, tabPage.ClientID);
+                writer.AddAttribute(HtmlTextWriterAttribute.Id, tabPage.GetTabName());
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass.Trim());
                 writer.AddAttribute("role", "tabpanel");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);

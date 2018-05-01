@@ -3,7 +3,7 @@
 bin/
 obj/
 packages/
-
+\.vs/
 
 !packages/repositories.config
 .vs/config/

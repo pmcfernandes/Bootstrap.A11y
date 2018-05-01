@@ -101,6 +101,8 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
 

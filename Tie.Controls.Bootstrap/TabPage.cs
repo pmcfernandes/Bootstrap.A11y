@@ -108,6 +108,22 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        [NotifyParentProperty(true)]
+        [Browsable(true)]
+        [Localizable(true)]
+        [DefaultValue("")]
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this <see cref="TabPage" /> is enabled.
         /// </summary>
         /// <value>
@@ -148,8 +164,8 @@ namespace Tie.Controls.Bootstrap
                 writer.AddAttribute(HtmlTextWriterAttribute.Onclick, strPostBackScript);
             }
 
-            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.ClientID);
-            writer.AddAttribute("aria-controls", this.ClientID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.GetTabName());
+            writer.AddAttribute("aria-controls", this.GetTabName());
             writer.AddAttribute("role", "tab");
             writer.AddAttribute("data-toggle", "tab");
             writer.RenderBeginTag(HtmlTextWriterTag.A);
@@ -183,5 +199,13 @@ namespace Tie.Controls.Bootstrap
             }
         }
 
+        /// <summary>
+        /// Gets the name of the tab.
+        /// </summary>
+        /// <returns></returns>
+        internal string GetTabName()
+        {
+            return (String.IsNullOrEmpty(Name) ? this.ClientID : Name);
+        }
     }
 }

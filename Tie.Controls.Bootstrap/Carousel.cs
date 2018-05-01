@@ -162,7 +162,7 @@ namespace Tie.Controls.Bootstrap
             {
                 CarouselItem item = this.Items[i];
 
-                string strCssClass = "item";
+                string strCssClass = "carousel-item item";
                 if (this.ActiveCarouselItem == i)
                 {
                     strCssClass += " active";
