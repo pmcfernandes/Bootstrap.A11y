@@ -20,6 +20,7 @@
     <DefineConstants>TRACE;DEBUG;_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tie.Controls.Bootstrap.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,6 +70,9 @@
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Adapters\InputAdapter.cs">
       <Link>Adapters\InputAdapter.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Adapters\NamespaceDoc.cs">
+      <Link>Adapters\NamespaceDoc.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Affix.cs">
       <Link>Affix.cs</Link>
@@ -172,6 +176,9 @@
     <Compile Include="..\Tie.Controls.Bootstrap\Helpers\ControlHelper.cs">
       <Link>Helpers\ControlHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Helpers\NamespaceDoc.cs">
+      <Link>Helpers\NamespaceDoc.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Helpers\PagingHelper.cs">
       <Link>Helpers\PagingHelper.cs</Link>
     </Compile>
@@ -231,6 +238,9 @@
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Modal.cs">
       <Link>Modal.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\NamespaceDoc.cs">
+      <Link>NamespaceDoc.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\NavBar.cs">
       <Link>NavBar.cs</Link>

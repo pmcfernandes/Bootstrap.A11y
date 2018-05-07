@@ -25,6 +25,7 @@
     <DefineConstants>TRACE;DEBUG;_2_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tie.Controls.Bootstrap.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,6 +51,7 @@
     <Compile Include="AccordionPaneCollection.cs" />
     <Compile Include="Adapters\ButtonAdapter.cs" />
     <Compile Include="Adapters\GridViewAdapter.cs" />
+    <Compile Include="Adapters\NamespaceDoc.cs" />
     <Compile Include="Affix.cs" />
     <Compile Include="Alert.cs" />
     <Compile Include="Badge.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Helpers\ControlHelper.cs" />
     <Compile Include="Helpers\PagingHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Helpers\NamespaceDoc.cs" />
     <Compile Include="HyperLinkButton.cs" />
     <Compile Include="IListItem.cs" />
     <Compile Include="Image.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="MediaObject.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Modal.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="NavBar.cs" />
     <Compile Include="PageHeader.cs" />
     <Compile Include="Paginator.cs" />
