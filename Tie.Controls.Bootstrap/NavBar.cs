@@ -1,6 +1,7 @@
 ﻿// NavBar.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,37 +14,47 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Positions where a NavBar may occur.
+    /// </summary>
     public enum Position
     {
+        /// <summary>No position defined.</summary>
         None = 0,
+        /// <summary>Top of page.</summary>
         Top = 1,
+        /// <summary>Bottom of page.</summary>
         Bottom = 2
     }
 
+    /// <summary>
+    /// Represents a Bootstrap navigation bar.
+    /// </summary>
     [ToolboxData("<{0}:NavBar runat=server></{0}:NavBar>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Menu))]
     [ParseChildren(true)]
     [PersistChildren(false)]
     public class NavBar : WebControl, INamingContainer
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="NavBar" /> class.
         /// </summary>
-        public NavBar()
-            : base()
+        public NavBar() : base("nav")
         {
             this.Position = Position.None;
             this.Inverted = true;
             this.Fixed = false;
+            this.Collapsed = true;
+            this.Fluid = true;
         }
 
         /// <summary>
@@ -103,8 +114,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(Position.None)]
         public Position Position
         {
-            get { return (Position)ViewState["Position"]; }
-            set { ViewState["Position"] = value; }
+            get { return (Position)this.ViewState["Position"]; }
+            set { this.ViewState["Position"] = value; }
         }
 
         /// <summary>
@@ -117,8 +128,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(true)]
         public bool Inverted
         {
-            get { return (bool)ViewState["Inverted"]; }
-            set { ViewState["Inverted"] = value; }
+            get { return (bool)this.ViewState["Inverted"]; }
+            set { this.ViewState["Inverted"] = value; }
         }
 
         /// <summary>
@@ -131,29 +142,39 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Fixed
         {
-            get { return (bool)ViewState["Fixed"]; }
-            set { ViewState["Fixed"] = value; }
+            get { return (bool)this.ViewState["Fixed"]; }
+            set { this.ViewState["Fixed"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Gets or sets a value indicating whether this <see cref="NavBar" /> is collapsed.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
+        /// <value>
+        ///   <c>true</c> if collapsed; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool Collapsed
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            get { return (bool)this.ViewState["Collapsed"]; }
+            set { this.ViewState["Collapsed"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Gets or sets a value indicating whether this <see cref="NavBar" />'s container is fluid.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
+        /// <value>
+        ///   <c>true</c> if fluid; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool Fluid
         {
-            writer.RenderEndTag();
+            get { return (bool)this.ViewState["Fluid"]; }
+            set { this.ViewState["Fluid"] = value; }
         }
 
-          /// <summary>
+        /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
@@ -166,28 +187,27 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "container-fluid");
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
+            string containerClass = Fluid ? "container-fluid" : "container";
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, containerClass);
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
            
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
 
-            output.RenderEndTag(); // Close Div   
+            writer.RenderEndTag(); // Close Div   
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -207,7 +227,11 @@ namespace Tie.Controls.Bootstrap
             }
 
             System.Web.UI.WebControls.Panel panel = new System.Web.UI.WebControls.Panel();
-            panel.CssClass = "collapse navbar-collapse";
+            panel.CssClass = "navbar-collapse";
+            if (Collapsed)
+            {
+                panel.CssClass += " collapse";
+            }
             panel.ID = "bs-navbar-collapse";
 
             if (this.LeftContent != null)
@@ -235,37 +259,26 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "navbar";
+            StringBuilder classes = new StringBuilder("navbar");
+            classes.Append(this.Inverted ? " navbar-inverse" : " navbar-default");
+            classes.Append(GetPositionClass());
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
+        }
 
-            if (this.Inverted)
-            {
-                str += " navbar-inverse";
-            }
-            else
-            {
-                str += " navbar-default";
-            }
-           
+        private string GetPositionClass()
+        {
             switch (this.Position)
             {
                 case Position.Top:
-                    str += " navbar-" + (this.Fixed ? "fixed" : "static") + "-top";
-                    break;
-
                 case Position.Bottom:
-                    str += " navbar-" + (this.Fixed ? "fixed" : "static") + "-bottom";
-                    break;
-
+                    string fixedStatic = this.Fixed ? "fixed" : "static";
+                    return String.Format(" navbar-{0}-{1}", fixedStatic, StringHelper.ToLower(this.Position));
+                case Position.None:
                 default:
-                    break;
+                    // no class needed
+                    return String.Empty;
             }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
         }
     }
 }

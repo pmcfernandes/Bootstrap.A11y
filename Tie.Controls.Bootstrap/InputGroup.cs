@@ -1,6 +1,7 @@
 ﻿// InputGroup.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,9 +18,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap input group.
+    /// </summary>
     [ToolboxData("<{0}:InputGroup runat=server></{0}:InputGroup>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [DefaultProperty("CssClass")]
@@ -27,12 +32,10 @@ namespace Tie.Controls.Bootstrap
     [PersistChildren(false)]
     public class InputGroup : WebControl, INamingContainer
     {
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="Container"/> class.
+        /// Initializes a new instance of the <see cref="InputGroup"/> class.
         /// </summary>
         public InputGroup()
-            : base()
         {
             this.Size = Size.Default;
             this.Prefix = "";
@@ -64,8 +67,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(Size.Default)]
         public Size Size
         {
-            get { return (Size)ViewState["Size"]; }
-            set { ViewState["Size"] = value; }
+            get { return (Size)this.ViewState["Size"]; }
+            set { this.ViewState["Size"] = value; }
         }
 
         /// <summary>
@@ -78,8 +81,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Prefix
         {
-            get { return (string)ViewState["Prefix"]; }
-            set { ViewState["Prefix"] = value; }
+            get { return (string)this.ViewState["Prefix"]; }
+            set { this.ViewState["Prefix"] = value; }
         }
 
         /// <summary>
@@ -92,26 +95,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Suffix
         {
-            get { return (string)ViewState["Suffix"]; }
-            set { ViewState["Suffix"] = value; }
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            get { return (string)this.ViewState["Suffix"]; }
+            set { this.ViewState["Suffix"] = value; }
         }
 
         /// <summary>
@@ -120,39 +105,39 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-
+            this.EnsureClassesPresent();
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
             if (!String.IsNullOrEmpty(this.Prefix))
             {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "input-group-addon");
-                output.RenderBeginTag(HtmlTextWriterTag.Span);
-                output.Write(this.Prefix);
-                output.RenderEndTag();
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "input-group-addon");
+                writer.AddAttribute("aria-hidden", "true");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.Write(this.Prefix);
+                writer.RenderEndTag();
             }
 
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
 
             if (!String.IsNullOrEmpty(this.Suffix))
             {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "input-group-addon");
-                output.RenderBeginTag(HtmlTextWriterTag.Span);
-                output.Write(this.Suffix);
-                output.RenderEndTag();
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "input-group-addon");
+                writer.AddAttribute("aria-hidden", "true");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.Write(this.Suffix);
+                writer.RenderEndTag();
             }
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -175,46 +160,15 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Builds the CSS.
+        /// Ensures that necessary classes are present on the control before rendering.
         /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
+        private void EnsureClassesPresent()
         {
-            string str = "input-group";
-            str += " " + this.GetCssSize();
-
-            if (!String.IsNullOrEmpty(this.CssClass))
+            ControlHelper.EnsureCssClassPresent(this, "input-group");
+            if (this.Size != Size.Default)
             {
-                str += " " + this.CssClass;
+                ControlHelper.EnsureCssClassPresent(this, "input-group-" + StringHelper.ToLower(Size));
             }
-
-            return str.Trim();
-        }
-
-        /// <summary>
-        /// Gets the type of the CSS button.
-        /// </summary>
-        /// <returns></returns>
-        private string GetCssSize()
-        {
-            string str = "";
-
-            switch (this.Size)
-            {
-                case Size.Large:
-                    str = "input-group-lg";
-                    break;
-
-                case Size.Small:
-                    str = "input-group-sm";
-                    break;
-
-                default:
-                    str = "";
-                    break;
-            }
-
-            return str;
         }
     }
 }

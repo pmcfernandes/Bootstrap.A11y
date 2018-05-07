@@ -1,6 +1,7 @@
 ﻿// AccordionControl.cs
 
 // Copyright (C) 2013 Francois Viljoen
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,27 +13,32 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.ComponentModel;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap accordion.
+    /// </summary>
     [ToolboxData("<{0}:AccordionControl runat=server></{0}:AccordionControl>")]
     [ParseChildren(true, "Panes")]
     public class AccordionControl : WebControl, INamingContainer
     {
-        private AccordionPaneCollection _Panes;
+        readonly AccordionPaneCollection _Panes;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TabControl" /> class.
+        /// Initializes a new instance of the <see cref="AccordionControl" /> class.
         /// </summary>
-        public AccordionControl()
-            : base()
+        public AccordionControl() : base(HtmlTextWriterTag.Div)
         {
             _Panes = new AccordionPaneCollection(this);
             this.ListGroup = false;
+            this.MultiSelectable = false;
+            this.HeaderTagType = "h4";
+            this.DefaultPanelType = null;
         }
 
         /// <summary>
@@ -48,21 +54,57 @@ namespace Tie.Controls.Bootstrap
             get { return _Panes; }
         }
 
+        /// <summary>
+        /// Gets or sets whether or not the accordion should allow multiple tabs to be open at once.
+        /// </summary>
+        /// <value>
+        /// The value that will be set as the aria-multiselectable attribute.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(false)]
+        public bool MultiSelectable
+        {
+            get { return (bool)this.ViewState["MultiSelectable"]; }
+            set { this.ViewState["MultiSelectable"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or set whether the panes should be rendered as a ListGroup.
+        /// </summary>
         [Category("Appearance")]
         [DefaultValue(false)]
         public bool ListGroup
         {
-            get { return (bool)ViewState["ListGroup"]; }
-            set { ViewState["ListGroup"] = value; }
+            get { return (bool)this.ViewState["ListGroup"]; }
+            set { this.ViewState["ListGroup"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Gets or sets the tag type to use for the panel headers.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
+        /// <value>
+        /// The tag name.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue("h4")]
+        public string HeaderTagType
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            get { return (string)this.ViewState["HeaderTagType"]; }
+            set { this.ViewState["HeaderTagType"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of the accordion panel.
+        /// </summary>
+        /// <value>
+        /// The type of the panel.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(null)]
+        public PanelTypes? DefaultPanelType
+        {
+            get { return (PanelTypes?)this.ViewState["DefaultPanelType"]; }
+            set { this.ViewState["DefaultPanelType"] = value; }
         }
 
         /// <summary>
@@ -74,17 +116,11 @@ namespace Tie.Controls.Bootstrap
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            // add ARIA markup
+            writer.AddAttribute("role", "tablist");
+            writer.AddAttribute("aria-multiselectable", StringHelper.ToLower(MultiSelectable));
 
             base.Render(writer);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
         }
 
         /// <summary>
@@ -103,13 +139,12 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -121,14 +156,7 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "panel-group";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            return StringHelper.AppendWithSpaceIfNotEmpty("panel-group accordion", this.CssClass);
         }
 
     }

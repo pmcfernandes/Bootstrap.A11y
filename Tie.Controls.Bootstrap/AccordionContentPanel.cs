@@ -1,6 +1,7 @@
 ﻿// AccordionContentPanel.cs
 
 // Copyright (C) 2013 Francois Viljoen
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,29 +13,26 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
+using System.ComponentModel;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.ComponentModel;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents the body contents of an <see cref="AccordionPane"/>.
+    /// </summary>
     [ToolboxItem(false)]
     public class AccordionContentPanel : WebControl, INamingContainer
     {        
-        public AccordionContentPanel()
-            : base()
-        {
-
-        }
-
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Initializes a new instance of the <see cref="AccordionContentPanel" /> class.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
+        public AccordionContentPanel() : base(HtmlTextWriterTag.Div)
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            // nothing to do here
         }
 
         /// <summary>
@@ -43,45 +41,46 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.Parent.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            this.CssClass = this.BuildCss();
+            // add ARIA markup
+            writer.AddAttribute("role", "tabpanel");
+            // grab AccordionContentHeaderPanel's ClientID
+            foreach (Control ctrl in Parent.Controls)
+            {
+                if (ctrl is AccordionContentHeaderPanel)
+                {
+                    writer.AddAttribute("aria-labelledby", ctrl.ClientID);
+                    break;
+                }
+            }
 
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
+        protected override void RenderContents(HtmlTextWriter writer)
         {
+            if (((AccordionControl)this.Parent.Parent).ListGroup)
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "list-group");
+            }
+            else
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "panel-body");
+            }
+            
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+
+            this.RenderChildren(writer);
+            
             writer.RenderEndTag();
         }
 
         /// <summary>
-        /// Renders the contents.
-        /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
-        {
-            if (((AccordionControl)this.Parent.Parent).ListGroup == true)
-            {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "list-group");
-            }
-            else
-            {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "panel-body");
-            }
-            
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
-
-            this.RenderChildren(output);
-            
-            output.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -97,23 +96,10 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "";
-
-            if (((AccordionPane)this.Parent).Expanded == true)
-            {
-                str += " panel-collapse collapse in";
-            }
-            else
-            {
-                str += " panel-collapse collapse";
-            }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("panel-collapse collapse");
+            StringHelper.AppendIf(classes, ((AccordionPane)this.Parent).Expanded, " in");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
     }

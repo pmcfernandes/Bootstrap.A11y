@@ -1,6 +1,7 @@
 ﻿// TabPage.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -14,14 +15,14 @@
 
 using System;
 using System.ComponentModel;
-using System.Security.Permissions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
     /// <summary>
-    /// The individual TabPage class that holds the intermediary Tab page values
+    /// Represents an individual Bootstrap TabPage and holds the intermediary Tab page values.
     /// </summary>
     [ToolboxData("<{0}:TabPage runat=server></{0}:TabPage>")]
     [ToolboxItem(false)]
@@ -30,13 +31,11 @@ namespace Tie.Controls.Bootstrap
     public class TabPage : Control, INamingContainer
     {
         private PlaceHolder container;
-        private string strPostBackScript;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TabPage" /> class.
         /// </summary>
         public TabPage()
-            : base()
         {
             this.Enabled = true;
             this.Title = this.ID;
@@ -108,6 +107,22 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        [NotifyParentProperty(true)]
+        [Browsable(true)]
+        [Localizable(true)]
+        [DefaultValue("")]
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this <see cref="TabPage" /> is enabled.
         /// </summary>
         /// <value>
@@ -135,21 +150,24 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter" /> object, which writes the content to be rendered on the client.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the server control content.</param>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
             TabControl tabControl = (TabControl)this.Parent;
             
             if (tabControl.AutoPostBack)
             {
-                strPostBackScript = this.Page.ClientScript.GetPostBackClientHyperlink(tabControl, this.Index.ToString());
-                writer.AddAttribute(HtmlTextWriterAttribute.Onclick, strPostBackScript);
+                string postBackScript = this.Page.ClientScript.GetPostBackClientHyperlink(tabControl, this.Index.ToString());
+                writer.AddAttribute(HtmlTextWriterAttribute.Onclick, postBackScript);
             }
+            bool isActive = tabControl.ActiveTabPage == this.Index;
 
-            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.ClientID);
-            writer.AddAttribute("aria-controls", this.ClientID);
+            writer.AddAttribute(HtmlTextWriterAttribute.Href, "#" + this.GetTabName());
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.GetTabName() + "-label");
+            writer.AddAttribute("aria-controls", this.GetTabName());
+            writer.AddAttribute("aria-expanded", StringHelper.ToLower(isActive));
             writer.AddAttribute("role", "tab");
             writer.AddAttribute("data-toggle", "tab");
             writer.RenderBeginTag(HtmlTextWriterTag.A);
@@ -158,7 +176,7 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -183,5 +201,13 @@ namespace Tie.Controls.Bootstrap
             }
         }
 
+        /// <summary>
+        /// Gets the name of the tab.
+        /// </summary>
+        /// <returns></returns>
+        internal string GetTabName()
+        {
+            return (String.IsNullOrEmpty(Name) ? this.ClientID : Name);
+        }
     }
 }

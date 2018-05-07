@@ -1,6 +1,7 @@
 ﻿// Heading.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,15 +13,21 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap heading.
+    /// </summary>
     [ToolboxData("<{0}:Heading runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
     [DefaultProperty("Text")]
+    [ControlValueProperty("Text")]
+    [ParseChildren(false)]
     public class Heading : System.Web.UI.WebControls.Label
     {
         /// <summary>
@@ -33,12 +40,19 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public int H
         {
-            get { return (int)ViewState["H"]; }
-            set { ViewState["H"] = value; }
+            get { return (int)this.ViewState["H"]; }
+            set
+            {
+                if (value < 1 || value > 6)
+                {
+                    throw new ArgumentOutOfRangeException("H", "Invalid header value, H must be 1-6");
+                }
+                this.ViewState["H"] = value;
+            }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -68,16 +82,10 @@ namespace Tie.Controls.Bootstrap
                 case 6:
                     writer.RenderBeginTag(HtmlTextWriterTag.H6);
                     break;
-            }
-        }
 
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+                default:
+                    throw new ArgumentOutOfRangeException("H", "Invalid header value, H must be 1-6");
+            }
         }
     }
 }

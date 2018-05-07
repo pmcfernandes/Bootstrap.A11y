@@ -1,6 +1,7 @@
 ﻿// Alert.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -14,20 +15,31 @@
 
 using System;
 using System.ComponentModel;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-
+    /// <summary>
+    /// Contextual styles used on Bootstrap Alerts.
+    /// </summary>
     public enum AlertTypes
     {
+        /// <summary>Indicates caution should be taken with this action (usually yellow-orange)</summary>
         Warning = 0,
+        /// <summary>Indicates a dangerous or potentially negative action (usually red)</summary>
         Danger = 1,
+        /// <summary>Indicates a successful or positive action (usually green)</summary>
         Success = 2,
+        /// <summary>Indicates informational messages (usually light-blue)</summary>
         Info = 3
     }
 
+    /// <summary>
+    /// Represents a Bootstrap alert.
+    /// </summary>
     [ToolboxData("<{0}:Alert runat=server></{0}:Alert>")]
     [DefaultProperty("CssClass")]
     [ParseChildren(true, "Content")]
@@ -38,7 +50,6 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Alert" /> class.
         /// </summary>
         public Alert()
-            : base()
         {
             this.AlertType = AlertTypes.Danger;
             this.Dismissible = false;
@@ -54,8 +65,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(AlertTypes.Warning)]
         public AlertTypes AlertType
         {
-            get { return (AlertTypes)ViewState["AlertType"]; }
-            set { ViewState["AlertType"] = value; }
+            get { return (AlertTypes)this.ViewState["AlertType"]; }
+            set { this.ViewState["AlertType"] = value; }
         }
 
         /// <summary>
@@ -68,8 +79,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Dismissible
         {
-            get { return (bool)ViewState["Dismissible"]; }
-            set { ViewState["Dismissible"] = value; }
+            get { return (bool)this.ViewState["Dismissible"]; }
+            set { this.ViewState["Dismissible"] = value; }
         }
 
         /// <summary>
@@ -88,22 +99,13 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
             writer.AddAttribute("role", "alert");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);            
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
         }
 
         /// <summary>
@@ -120,36 +122,37 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            if (this.Dismissible == true)
+            if (this.Dismissible)
             {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "close");
-                output.AddStyleAttribute("type", "button");
-                output.AddStyleAttribute("data-dismiss", "alert");
-                output.RenderBeginTag(HtmlTextWriterTag.Button);
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "close");
+                writer.AddAttribute("type", "button");
+                writer.AddAttribute("data-dismiss", "alert");
+                writer.AddAttribute("aria-label", "Close");
+                writer.RenderBeginTag(HtmlTextWriterTag.Button);
 
-                output.RenderBeginTag(HtmlTextWriterTag.Span);
-                output.Write("&times;");
+                writer.AddAttribute("aria-hidden", "true");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.Write("&times;");
 
-                output.RenderEndTag(); // Span
-                output.RenderEndTag(); // Button
+                writer.RenderEndTag(); // Span
+                writer.RenderEndTag(); // Button
             }
 
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -172,20 +175,11 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "alert";
-            str += " " + this.GetAlertType();
-
-            if (this.Dismissible == true)
-            {
-                str += " alert-dismissible";
-            }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("alert");
+            classes.Append(this.GetAlertType());
+            StringHelper.AppendIf(classes, this.Dismissible, " alert-dismissible");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
 
@@ -195,32 +189,23 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string GetAlertType()
         {
-            string str = "";
-
             switch (this.AlertType)
             {
                 case AlertTypes.Success:
-                    str = "alert-success";
-                    break;
+                    return " alert-success";
 
                 case AlertTypes.Warning:
-                    str = "alert-warning";
-                    break;
+                    return " alert-warning";
 
                 case AlertTypes.Danger:
-                    str = "alert-danger";
-                    break;
+                    return " alert-danger";
 
                 case AlertTypes.Info:
-                    str = "alert-info";
-                    break;
+                    return " alert-info";
 
                 default:
-                    str = "";
-                    break;
+                    return String.Empty;
             }
-
-            return str.Trim();
         }
     }
 }

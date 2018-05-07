@@ -1,17 +1,41 @@
-﻿using System;
+﻿// Well.cs
+
+// Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
+
+// This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+// General Public License as published by the Free Software Foundation; either version 2 of the 
+// License, or (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+// the GNU General Public License for more details. You should have received a copy of the GNU 
+// General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
+// Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// The three sizes a well may have.
+    /// </summary>
     public enum Size
     {
+        /// <summary>The default size.</summary>
         Default = 0,
+        /// <summary>A larger size.</summary>
         Large = 1,
+        /// <summary>A smaller size.</summary>
         Small = 2
     }
 
+    /// <summary>
+    /// Represents a simple Bootstrap control with an inset effect.
+    /// </summary>
     [ToolboxData("<{0}:Well runat=server></{0}:Well>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
     public class Well : System.Web.UI.WebControls.Label, INamingContainer
@@ -20,7 +44,6 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Well"/> class.
         /// </summary>
         public Well()
-            : base()
         {
             this.Size = Size.Default;
         }
@@ -35,88 +58,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(Size.Default)]
         public Size Size
         {
-            get { return (Size)ViewState["Size"]; }
-            set { ViewState["Size"] = value; }
+            get { return (Size)this.ViewState["Size"]; }
+            set { this.ViewState["Size"] = value; }
         }
 
         /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        protected override void Render(System.Web.UI.HtmlTextWriter writer)
+        protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            ControlHelper.EnsureCssClassPresent(this, "well");
+            if(this.Size != Size.Default)
+            {
+                ControlHelper.EnsureCssClassPresent(this, "well-" + StringHelper.ToLower(Size));
+            }
             base.Render(writer);
-        }
-
-        /// <summary>
-        /// Renders the contents of the <see cref="T:System.Web.UI.WebControls.Label" /> into the specified writer.
-        /// </summary>
-        /// <param name="writer">The output stream that renders HTML content to the client.</param>
-        protected override void RenderContents(HtmlTextWriter writer)
-        {
-            base.RenderContents(writer);
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Builds the CSS.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
-        {
-            string str = "well";
-            str += " " + this.GetCssSize();
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
-        }
-
-        /// <summary>
-        /// Gets the type of the CSS button.
-        /// </summary>
-        /// <returns></returns>
-        private string GetCssSize()
-        {
-            string str = "";
-
-            switch (this.Size)
-            {
-                case Size.Large:
-                    str = "well-lg";
-                    break;
-
-                case Size.Small:
-                    str = "well-sm";
-                    break;
-
-                default:
-                    str = "";
-                    break;
-            }
-
-            return str;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// ButtonAdapter.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,8 +18,15 @@ using System.Web.UI.WebControls.Adapters;
 
 namespace Tie.Controls.Bootstrap.Adapters
 {
+    /// <summary>
+    /// Adapter to apply Bootstrap classes to a base ASP.NET <see cref="System.Web.UI.WebControls.Button"/>.
+    /// </summary>
     public class ButtonAdapter : WebControlAdapter
     {
+        /// <summary>
+        /// Renders the control to the specified HTML writer.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
             writer.AddAttribute(System.Web.UI.HtmlTextWriterAttribute.Class, "btn btn-default" + (!String.IsNullOrEmpty(this.Control.CssClass) ? " " + this.Control.CssClass : ""));

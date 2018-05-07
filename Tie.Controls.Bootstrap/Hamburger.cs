@@ -1,6 +1,7 @@
 ﻿// Hamburguer.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,24 +14,25 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Web.UI;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap hamburger control and brand information for a <see cref="NavBar"/>.
+    /// </summary>
     [ToolboxData("<{0}:Hamburger runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Button))]
     [DefaultProperty("Text")]
     public class Hamburger : System.Web.UI.WebControls.Button, INamingContainer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Button" /> class.
+        /// Initializes a new instance of the <see cref="Hamburger" /> class.
         /// </summary>
         public Hamburger()
-            : base()
         {
             this.Text = "Brand";
             this.NavigateUrl = "#";
@@ -46,8 +48,60 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("#")]
         public string NavigateUrl
         {
-            get { return (string)ViewState["NavigateUrl"]; }
-            set { ViewState["NavigateUrl"] = value; }
+            get { return (string)this.ViewState["NavigateUrl"]; }
+            set { this.ViewState["NavigateUrl"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the URL to the brand image.
+        /// </summary>
+        /// <value>
+        /// The URL to the brand image.
+        /// </value>
+        [Category("Appearance")]
+        public string ImageUrl
+        {
+            get { return (string)this.ViewState["ImageUrl"]; }
+            set { this.ViewState["ImageUrl"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the alternative text for the brand image.
+        /// </summary>
+        /// <value>
+        /// The alternative text for the brand image.
+        /// </value>
+        [Category("Appearance")]
+        public string AlternativeText
+        {
+            get { return (string)this.ViewState["AlternativeText"]; }
+            set { this.ViewState["AlternativeText"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the height for the brand image.
+        /// </summary>
+        /// <value>
+        /// The height for the brand image.
+        /// </value>
+        [Category("Appearance")]
+        public int? ImageHeight
+        {
+            get { return (int?)this.ViewState["ImageHeight"]; }
+            set { this.ViewState["ImageHeight"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the width for the brand image.
+        /// </summary>
+        /// <value>
+        /// The width for the brand image.
+        /// </value>
+        [Category("Appearance")]
+        public int? ImageWidth
+        {
+            get { return (int?)this.ViewState["ImageWidth"]; }
+            set { this.ViewState["ImageWidth"] = value; }
         }
 
         /// <summary>
@@ -60,7 +114,7 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -75,14 +129,14 @@ namespace Tie.Controls.Bootstrap
 
             if (this.NamingContainer is NavBar)
             {
-                writer.AddAttribute("data-target", "#" + ((NavBar)this.NamingContainer).ClientID + "_bs-navbar-collapse");
+                writer.AddAttribute("data-target", "#" + this.NamingContainer.ClientID + "_bs-navbar-collapse");
             }
 
             writer.RenderBeginTag(HtmlTextWriterTag.Button);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderEndTag(HtmlTextWriter writer)
@@ -92,6 +146,21 @@ namespace Tie.Controls.Bootstrap
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "navbar-brand");
             writer.AddAttribute(HtmlTextWriterAttribute.Href, ResolveUrl(this.NavigateUrl));            
             writer.RenderBeginTag(HtmlTextWriterTag.A);
+            if (!String.IsNullOrEmpty(ImageUrl))
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Alt, AlternativeText);
+                writer.AddAttribute(HtmlTextWriterAttribute.Src, ImageUrl);
+                if (ImageHeight.HasValue)
+                {
+                    writer.AddAttribute(HtmlTextWriterAttribute.Height, ImageHeight.ToString());
+                }
+                if (ImageWidth.HasValue)
+                {
+                    writer.AddAttribute(HtmlTextWriterAttribute.Width, ImageWidth.ToString());
+                }
+                writer.RenderBeginTag(HtmlTextWriterTag.Img);
+                writer.RenderEndTag();
+            }
             writer.Write(this.Text);
             writer.RenderEndTag();
 
@@ -99,9 +168,9 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents of the control to the specified writer.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> object that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
@@ -130,14 +199,7 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "navbar-toggle collapsed";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            return StringHelper.AppendWithSpaceIfNotEmpty("navbar-toggle collapsed", this.CssClass);
         }
     }
 }

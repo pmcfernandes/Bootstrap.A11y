@@ -1,6 +1,7 @@
 ﻿// MediaList.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,16 +13,17 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a list of Bootstrap media objects.
+    /// </summary>
     [ToolboxData("<{0}:MediaList runat=server></{0}:MediaList>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.BulletedList))]
     [DefaultProperty("CssClass")]
@@ -29,6 +31,14 @@ namespace Tie.Controls.Bootstrap
     [PersistChildren(false)]
     public class MediaList : WebControl, INamingContainer
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MediaList" /> class.
+        /// </summary>
+        public MediaList() : base(HtmlTextWriterTag.Ul)
+        {
+            // nothing else to do
+        }
+
         /// <summary>
         /// Gets or sets the content.
         /// </summary>
@@ -45,51 +55,29 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void Render(HtmlTextWriter writer)
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            ControlHelper.EnsureCssClassPresent(this, "media-list");
+            base.Render(writer);
         }
 
         /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        protected override void Render(HtmlTextWriter writer)
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-
-            base.Render(writer);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "media");
+            writer.RenderBeginTag(HtmlTextWriterTag.Li);
+            this.RenderChildren(writer);
+            writer.RenderEndTag();
         }
 
         /// <summary>
-        /// Renders the contents.
-        /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
-        {
-            output.AddAttribute(HtmlTextWriterAttribute.Style, "media");
-            output.RenderBeginTag(HtmlTextWriterTag.Li);            
-            this.RenderChildren(output);
-
-            output.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -109,22 +97,6 @@ namespace Tie.Controls.Bootstrap
 
             this.Controls.Clear();
             this.Controls.Add(container);
-        }
-
-        /// <summary>
-        /// Builds the CSS.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
-        {
-            string str = "media-list";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
         }
     }
 }

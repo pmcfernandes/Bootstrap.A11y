@@ -106,9 +106,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tie.Controls.Bootstrap\Tie.Controls.Bootstrap.csproj">
-      <Project>{08f21f1d-3746-4095-984c-0a22d333cfe5}</Project>
-      <Name>Tie.Controls.Bootstrap</Name>
+    <ProjectReference Include="..\Tie.Controls.Bootstrap.v45\Tie.Controls.Bootstrap.v45.csproj">
+      <Project>{7dfb3b6c-0e3c-4fc1-8b3e-f3dc1142ef91}</Project>
+      <Name>Tie.Controls.Bootstrap.v45</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

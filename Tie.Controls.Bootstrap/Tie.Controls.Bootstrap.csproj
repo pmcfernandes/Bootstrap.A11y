@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_2_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -53,6 +53,7 @@
     <Compile Include="Affix.cs" />
     <Compile Include="Alert.cs" />
     <Compile Include="Badge.cs" />
+    <Compile Include="CollectionBase.cs" />
     <Compile Include="Breadcrumbs.cs" />
     <Compile Include="BreadcrumbsCollection.cs" />
     <Compile Include="BreadcrumbsItem.cs" />
@@ -61,12 +62,17 @@
     <Compile Include="CarouselCollection.cs" />
     <Compile Include="CarouselItem.cs" />
     <Compile Include="Dropdown.cs" />
+    <Compile Include="Enumerations\ButtonSizes.cs" />
+    <Compile Include="Enumerations\PopoverPositions.cs" />
+    <Compile Include="Enumerations\Triggers.cs" />
     <Compile Include="FieldSet.cs" />
     <Compile Include="GridView.cs" />
     <Compile Include="GridViewPager.cs" />
     <Compile Include="Hamburger.cs" />
     <Compile Include="Heading.cs" />
-    <Compile Include="Helpers\ControlFinder.cs" />
+    <Compile Include="Helpers\ControlHelper.cs" />
+    <Compile Include="Helpers\PagingHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="IListItem.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Adapters\InputAdapter.cs" />

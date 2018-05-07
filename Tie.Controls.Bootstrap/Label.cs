@@ -1,6 +1,7 @@
 ﻿// Label.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,23 +13,35 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Contextual styles used on Bootstrap Labels.
+    /// </summary>
     public enum LabelTypes
     {
+        /// <summary>Default style (usually gray)</summary>
         Default = 0,
+        /// <summary>Indicates a successful or positive action (usually green)</summary>
         Success = 1,
+        /// <summary>Indicates caution should be taken with this action (usually yellow-orange)</summary>
         Warning = 2,
+        /// <summary>Primary brand color</summary>
         Primary = 3,
+        /// <summary>Indicates informational messages (usually light-blue)</summary>
         Info = 4,
+        /// <summary>Indicates a dangerous or potentially negative action (usually red)</summary>
         Danger = 5
     }
 
+    /// <summary>
+    /// Represents a Bootstrap label.
+    /// </summary>
     [ToolboxData("<{0}:Label runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
     [DefaultProperty("Text")]
@@ -38,7 +51,6 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Label" /> class.
         /// </summary>
         public Label()
-            : base()
         {
             this.LabelType = LabelTypes.Default;
             this.Text = "Label";
@@ -54,8 +66,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(LabelTypes.Default)]
         public LabelTypes LabelType
         {
-            get { return (LabelTypes)ViewState["LabelType"]; }
-            set { ViewState["LabelType"] = value; }
+            get { return (LabelTypes)this.ViewState["LabelType"]; }
+            set { this.ViewState["LabelType"] = value; }
         }
 
         /// <summary>
@@ -64,66 +76,9 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-
+            ControlHelper.EnsureCssClassPresent(this, "label");
+            ControlHelper.EnsureCssClassPresent(this, "label-" + StringHelper.ToLower(LabelType));
             base.Render(writer);
         }
-
-        /// <summary>
-        /// Builds the CSS.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
-        {
-            string str = "label";
-            str += " " + this.GetCssLabelType();
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
-        }
-
-        /// <summary>
-        /// Gets the type of the CSS label.
-        /// </summary>
-        /// <returns></returns>
-        private string GetCssLabelType()
-        {
-            string str = "";
-
-            switch (this.LabelType)
-            {
-                case LabelTypes.Success:
-                    str = "label-success";
-                    break;
-
-                case LabelTypes.Warning:
-                     str = "label-warning";
-                    break;
-
-                case LabelTypes.Primary:
-                    str = "label-primary";
-                    break;
-
-                case LabelTypes.Info:
-                     str = "label-info";
-                    break;
-
-                case LabelTypes.Danger:
-                    str = "label-danger";
-                    break;
-
-                default:
-                    str = "label-default";
-                    break;
-            }
-
-            return str;
-        }
-
     }
-
 }

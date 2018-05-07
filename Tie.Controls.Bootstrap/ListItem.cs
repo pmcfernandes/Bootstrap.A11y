@@ -1,6 +1,7 @@
 ﻿// ListItem.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,31 +14,34 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents an item in a Bootstrap list.
+    /// </summary>
     [ToolboxData("<{0}:ListItem runat=server></{0}:ListItem>")]
     [ToolboxItem(false)]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
-    public class ListItem : Control, INamingContainer, IParserAccessor, IListItem
+    public class ListItem : WebControl, INamingContainer, IParserAccessor, IListItem
     {
-        private ListItemCollection _items;
+        readonly ListItemCollection _items;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListItem"/> class.
         /// </summary>
-        public ListItem()
-            : base()
+        public ListItem() : base(HtmlTextWriterTag.Li)
         {
             this._items = new ListItemCollection();
             this.Enabled = true;
+            this.Active = false;
             this.Icon = "";
             this.Text = "";
             this.NavigateUrl = "#";
@@ -48,25 +52,37 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         /// <param name="Text">The text.</param>
         /// <param name="Value">The value.</param>
-        /// <param name="Enabled">if set to <c>true</c> [enabled].</param>
-        public ListItem(string Text, string Value, bool Enabled)
+        /// <param name="Enabled">Whether the item is enabled.</param>
+        /// <param name="Active">Whether the item is active.</param>
+        public ListItem(string Text, string Value, bool Enabled, bool Active)
             : this()
         {
             this.Text = Text;
             this.NavigateUrl = Value;
             this.Enabled = Enabled;
+            this.Active = Active;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="ListItem"/> is enabled.
+        /// Initializes a new instance of the <see cref="ListItem"/> class.
+        /// </summary>
+        /// <param name="Text">The text.</param>
+        /// <param name="Value">The value.</param>
+        /// <param name="Enabled">if set to <c>true</c> [enabled].</param>
+        public ListItem(string Text, string Value, bool Enabled)
+            : this(Text, Value, Enabled, false)
+        { }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="ListItem"/> is the active item.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if enabled; otherwise, <c>false</c>.
+        ///   <c>true</c> if active; otherwise, <c>false</c>.
         /// </value>
         [NotifyParentProperty(true)]
         [Browsable(true)]
-        [DefaultValue(true)]
-        public bool Enabled
+        [DefaultValue(false)]
+        public bool Active
         {
             get;
             set;
@@ -138,10 +154,10 @@ namespace Tie.Controls.Bootstrap
         /// <param name="obj">An <see cref="T:System.Object" /> that represents the parsed element.</param>
         protected override void AddParsedSubObject(object obj)
         {
-            if (obj is ListItem || obj is ListHeader | obj is ListSeparator)
+            IListItem listItem = obj as IListItem;
+            if (listItem != null)
             {
-                Items.Add((IListItem)obj);
-                return;
+                this.Items.Add(listItem);
             }
         }
 
@@ -158,24 +174,20 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Outputs server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter" /> object and stores tracing information about the control if tracing is enabled.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        public override void RenderControl(HtmlTextWriter writer)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            string strCssClass = this.BuildCssItem();
-
-            if (!String.IsNullOrEmpty(strCssClass)) writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass);
-            writer.RenderBeginTag(HtmlTextWriterTag.Li);
-            Render(writer);
-            writer.RenderEndTag();
-        }   
+            this.CssClass = StringHelper.AppendWithSpaceIfNotEmpty(this.CssClass, BuildCss());
+            base.RenderBeginTag(writer);
+        }
 
         /// <summary>
-        /// Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter" /> object, which writes the content to be rendered on the client.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the server control content.</param>
-        protected override void Render(HtmlTextWriter writer)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
             if (!String.IsNullOrEmpty(this.Icon))
             {
@@ -230,23 +242,14 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Builds the CSS item.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns></returns>
-        private string BuildCssItem()
+        /// <returns>The CSS classes.</returns>
+        private string BuildCss()
         {
-            string str = "";
-
-            if (this.Items.Count != 0)
-            {
-                str += " dropdown";
-            }
-
-            if (this.Enabled == false)
-            {
-                str += " disabled";
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder();
+            StringHelper.AppendIf(classes, this.Items.Count > 0, " dropdown");
+            StringHelper.AppendIf(classes, !this.Enabled, " disabled");
+            StringHelper.AppendIf(classes, this.Active, " active");
+            return classes.ToString();
         }
     }
 }

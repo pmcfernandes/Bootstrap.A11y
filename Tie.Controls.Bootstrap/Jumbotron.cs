@@ -1,6 +1,7 @@
 ﻿// Jumbotron.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,13 +13,19 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap jumbotron.
+    /// </summary>
+    /// <remarks>
+    /// A lightweight, flexible component that can optionally extend the entire viewport to showcase key content on your site.
+    /// </remarks>
     [ToolboxData("<{0}:Jumbotron runat=server></{0}:Jumbotron>")]
     [ParseChildren(true, "Content")]
     public class Jumbotron : WebControl, INamingContainer
@@ -27,8 +34,7 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Initializes a new instance of the <see cref="Jumbotron"/> class.
         /// </summary>
-        public Jumbotron()
-            : base()
+        public Jumbotron() : base(HtmlTextWriterTag.Div)
         {
             this.FullWidth = false;
         }
@@ -73,17 +79,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool FullWidth
         {
-            get { return (bool)ViewState["FullWidth"]; }
-            set { ViewState["FullWidth"] = value; }
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {          
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);            
+            get { return (bool)this.ViewState["FullWidth"]; }
+            set { this.ViewState["FullWidth"] = value; }
         }
 
         /// <summary>
@@ -100,43 +97,32 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            writer.RenderEndTag();            
-        }
-
-        /// <summary>
-        /// Renders the contents.
-        /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
-        {
-            if (this.FullWidth == true)
+            if (this.FullWidth)
             {
-                output.AddAttribute(HtmlTextWriterAttribute.Class, "container");
-                output.RenderBeginTag(HtmlTextWriterTag.Div);
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "container");
+                writer.RenderBeginTag(HtmlTextWriterTag.Div);
             }
 
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
 
-            if (this.FullWidth == true)
+            if (this.FullWidth)
             {
-                output.RenderEndTag(); // Close Div   
+                writer.RenderEndTag(); // Close Div   
             }
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -163,14 +149,7 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "jumbotron";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            return StringHelper.AppendWithSpaceIfNotEmpty("jumbotron", this.CssClass);
         }
     }
 }
