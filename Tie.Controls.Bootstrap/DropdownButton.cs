@@ -1,7 +1,6 @@
-﻿// Dropdown.cs
+﻿// DropdownButton.cs
 
-// Copyright (C) 2013 Pedro Fernandes
-// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
+// Copyright (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,30 +16,34 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
     /// <summary>
-    /// Represents a Bootstrap drop-down.
+    /// Represents a Bootstrap drop-down button.
     /// </summary>
-    [ToolboxData("<{0}:Dropdown runat=server></{0}:Dropdown>")]
+    [ToolboxData("<{0}:DropdownButton runat=server></{0}:DropdownButton>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.DropDownList))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
-    public class Dropdown : AccessibleWebControl, INamingContainer
+    public class DropdownButton : WebControl, INamingContainer
     {
         readonly ListItemCollection _items;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Dropdown" /> class.
+        /// Initializes a new instance of the <see cref="DropdownButton" /> class.
         /// </summary>
-        public Dropdown()
+        public DropdownButton()
         {
             this._items = new ListItemCollection();
             this.RightToLeft = false;
             this.Expanded = false;
+            this.Split = false;
             this.DropUp = false;
+            this.ButtonSize = ButtonSizes.Default;
+            this.ButtonType = ButtonTypes.Default;
             this.Text = "";
         }
 
@@ -87,6 +90,48 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to render as a split button dropdown.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [split]; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(false)]
+        public bool Split
+        {
+            get { return (bool)this.ViewState["Split"]; }
+            set { this.ViewState["Split"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the type of the button.
+        /// </summary>
+        /// <value>
+        /// The type of the button.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(ButtonTypes.Default)]
+        public ButtonTypes ButtonType
+        {
+            get { return (ButtonTypes)this.ViewState["ButtonType"]; }
+            set { this.ViewState["ButtonType"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the size of the button.
+        /// </summary>
+        /// <value>
+        /// The size of the button.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(ButtonSizes.Default)]
+        public ButtonSizes ButtonSize
+        {
+            get { return (ButtonSizes)this.ViewState["ButtonSize"]; }
+            set { this.ViewState["ButtonSize"] = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the text.
         /// </summary>
         /// <value>
@@ -110,7 +155,7 @@ namespace Tie.Controls.Bootstrap
         [PersistenceMode(PersistenceMode.InnerProperty)]
         public ListItemCollection Items
         {
-            get { return _items; }
+            get { return this._items; }
         }
 
         /// <summary>
@@ -121,50 +166,58 @@ namespace Tie.Controls.Bootstrap
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            if (ShouldRenderOuterDiv())
+            if (!IsParentButtonGroup())
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildOuterDivCss());
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
             }
 
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "btn btn-default dropdown-toggle");
-            string buttonId = ClientID + "_btn";
-            writer.AddAttribute("id", buttonId);
-            writer.AddAttribute("type", "button");
-            writer.AddAttribute("data-toggle", "dropdown");
-            writer.AddAttribute("aria-haspopup", "true");
-            writer.AddAttribute("aria-expanded", StringHelper.ToLower(Expanded));
-            writer.RenderBeginTag(HtmlTextWriterTag.Button);
-            writer.Write(this.Text);
-
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "caret");
-            writer.RenderBeginTag(HtmlTextWriterTag.Span);
-            writer.RenderEndTag(); // Span
-
-            writer.RenderEndTag(); // Button
-
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCssInternal());
-            writer.AddAttribute("aria-labelledby", buttonId);
-            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
-        }
-
-        /// <summary>
-        /// Decides whether or not the outer div (classed dropdown/dropup) should be rendered.
-        /// If this is a descendant of a ButtonGroup, that div should not be rendered.
-        /// </summary>
-        /// <returns>True if the div should be rendered</returns>
-        private bool ShouldRenderOuterDiv()
-        {
-            Control p = this.Parent;
-            while (p != null)
+            string buttonClass = this.BuildButtonCss();
+            if(this.Split)
             {
-                if (p is ButtonGroup)
-                {
-                    return false;
-                }
-                p = p.Parent;
+                // Main Button
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, buttonClass);
+                writer.AddAttribute("type", "button");
+                writer.RenderBeginTag(HtmlTextWriterTag.Button);
+                writer.Write(this.Text);
+                writer.RenderEndTag(); // Main Button
+                // Toggle Button
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, buttonClass + " dropdown-toggle");
+                writer.AddAttribute("type", "button");
+                writer.AddAttribute("data-toggle", "dropdown");
+                writer.AddAttribute("aria-haspopup", "true");
+                writer.AddAttribute("aria-expanded", StringHelper.ToLower(this.Expanded));
+                writer.RenderBeginTag(HtmlTextWriterTag.Button);
+                // Caret Span
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "caret");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.RenderEndTag(); // Caret Span
+                // Label Span
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.Write("Toggle Dropdown");
+                writer.RenderEndTag(); // Label Span
+                writer.RenderEndTag(); // Toggle Button
             }
-            return true;
+            else
+            {
+                // Main Button
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, buttonClass);
+                writer.AddAttribute("type", "button");
+                writer.AddAttribute("data-toggle", "dropdown");
+                writer.AddAttribute("aria-haspopup", "true");
+                writer.AddAttribute("aria-expanded", StringHelper.ToLower(this.Expanded));
+                writer.RenderBeginTag(HtmlTextWriterTag.Button);
+                writer.Write(this.Text);
+                writer.Write(" ");
+                // Caret Span
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "caret");
+                writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                writer.RenderEndTag(); // Caret Span
+                writer.RenderEndTag(); // Main Button
+            }
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCssInternal());
+            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
         }
 
         /// <summary>
@@ -173,10 +226,10 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderEndTag(HtmlTextWriter writer)
         {
-            writer.RenderEndTag();
-            if (ShouldRenderOuterDiv())
+            writer.RenderEndTag(); // ul
+            if (!IsParentButtonGroup())
             {
-                writer.RenderEndTag();
+                writer.RenderEndTag(); // div
             }
         }
 
@@ -201,19 +254,27 @@ namespace Tie.Controls.Bootstrap
         {
             foreach (Control item in this.Items)
             {
-                item.RenderControl(writer);              
-            }            
+                item.RenderControl(writer);
+            }
         }
 
-        /// <summary>
-        /// Builds the CSS.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
+        private string BuildOuterDivCss()
         {
-            StringBuilder classes = new StringBuilder(this.DropUp ? "dropup" : "dropdown");
-            StringHelper.AppendIf(classes, this.Expanded, " open");
-            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return StringHelper.AppendIf("btn-group", this.DropUp, " dropup");
+        }
+
+        private string BuildButtonCss()
+        {
+            StringBuilder classes = new StringBuilder("btn");
+            if(this.ButtonType != ButtonTypes.Default)
+            {
+                classes.Append(" btn-" + StringHelper.ToLower(ButtonType));
+            }
+            classes.Append(ButtonSizesHelper.GetClassName(this.ButtonSize));
+            if (!this.Split)
+            {
+                classes.Append(" dropdown-toggle");
+            }
             return classes.ToString();
         }
 
@@ -236,6 +297,16 @@ namespace Tie.Controls.Bootstrap
                 this.EnsureChildControls();
                 return base.Controls;
             }
+        }
+
+        /// <summary>
+        /// Decides whether or not the outer div (classed dropdown/dropup) should be rendered.
+        /// If this is a descendant of a ButtonGroup, that div should not be rendered.
+        /// </summary>
+        /// <returns>True if the div should be rendered</returns>
+        private bool IsParentButtonGroup()
+        {
+            return this.Parent is ButtonGroup;
         }
     }
 }

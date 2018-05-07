@@ -58,7 +58,7 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Initializes a new instance of the <see cref="ProgressBar" /> class.
         /// </summary>
-        public ProgressBar() : base(HtmlTextWriterTag.Div)
+        public ProgressBar()
         {
             this.Animated = false;
             this.Striped = false;
@@ -119,6 +119,14 @@ namespace Tie.Controls.Bootstrap
         private decimal Percentage
         {
             get { return (Value - MinValue) / (MaxValue - MinValue) * 100M; }
+        }
+
+        /// <summary>
+        /// Determines whether this <see cref="ProgressBar" /> is the child of a <see cref="StackedProgressBars" /> control.
+        /// </summary>
+        private bool IsStacked
+        {
+            get { return this.Parent is StackedProgressBars; }
         }
 
         /// <summary>
@@ -228,6 +236,18 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        public override void RenderBeginTag(HtmlTextWriter writer)
+        {
+            if (!IsStacked)
+            {
+                writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            }
+        }
+
+        /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
@@ -235,7 +255,10 @@ namespace Tie.Controls.Bootstrap
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            if (!IsStacked)
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            }
 
             base.Render(writer);
         }
@@ -290,6 +313,18 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
+        /// </summary>
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        public override void RenderEndTag(HtmlTextWriter writer)
+        {
+            if (!IsStacked)
+            {
+                writer.RenderEndTag();
+            }
+        }
+
+        /// <summary>
         /// Builds the internal CSS.
         /// </summary>
         /// <returns></returns>
@@ -308,7 +343,8 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            StringBuilder classes = new StringBuilder("progress");
+            StringBuilder classes = new StringBuilder();
+            StringHelper.AppendIf(classes, !IsStacked, "progress");
             StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
             return classes.ToString().Trim();
         }

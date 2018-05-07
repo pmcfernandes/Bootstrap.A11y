@@ -1,7 +1,6 @@
-﻿// Badge.cs
+﻿// ProgressBarCollection.cs
 
-// Copyright (C) 2013 Pedro Fernandes
-// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
+// Copyright (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,29 +12,22 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System.ComponentModel;
-using System.Drawing;
+
 using System.Web.UI;
-using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
     /// <summary>
-    /// Represents a Bootstrap badge.
+    /// Represents a collection of Bootstrap <see cref="ProgressBar"/>s.
     /// </summary>
-    [ToolboxData("<{0}:Badge runat=server />")]
-    [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
-    [DefaultProperty("Text")]
-    public class Badge : TextWebControl
+    public class ProgressBarCollection : CollectionBase<ProgressBar>
     {
         /// <summary>
-        /// Renders the control to the specified HTML writer.
+        /// Initializes a new instance of the <see cref="ProgressBarCollection" /> class.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
-        protected override void Render(HtmlTextWriter writer)
+        /// <param name="parent">The parent control.</param>
+        public ProgressBarCollection(Control parent) : base(parent)
         {
-            ControlHelper.EnsureCssClassPresent(this, "badge");
-            base.Render(writer);
         }
     }
 }

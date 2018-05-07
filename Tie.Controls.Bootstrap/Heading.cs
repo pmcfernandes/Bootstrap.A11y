@@ -28,7 +28,7 @@ namespace Tie.Controls.Bootstrap
     [DefaultProperty("Text")]
     [ControlValueProperty("Text")]
     [ParseChildren(false)]
-    public class Heading : System.Web.UI.WebControls.Label
+    public class Heading : TextWebControl
     {
         /// <summary>
         /// Gets or sets the H.

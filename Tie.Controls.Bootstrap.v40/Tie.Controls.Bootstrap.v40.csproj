@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -42,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Tie.Controls.Bootstrap\AccessibleWebControl.cs">
+      <Link>AccessibleWebControl.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\AccordionContentHeaderPanel.cs">
       <Link>AccordionContentHeaderPanel.cs</Link>
     </Compile>
@@ -99,6 +103,12 @@
     <Compile Include="..\Tie.Controls.Bootstrap\CarouselItem.cs">
       <Link>CarouselItem.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\CheckBox.cs">
+      <Link>CheckBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\CheckBoxList.cs">
+      <Link>CheckBoxList.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\CollectionBase.cs">
       <Link>CollectionBase.cs</Link>
     </Compile>
@@ -111,8 +121,26 @@
     <Compile Include="..\Tie.Controls.Bootstrap\Dropdown.cs">
       <Link>Dropdown.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\DropdownButton.cs">
+      <Link>DropdownButton.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\DropDownList.cs">
+      <Link>DropDownList.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\AccessibilityPlugins.cs">
+      <Link>Enumerations\AccessibilityPlugins.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\AspectRatios.cs">
+      <Link>Enumerations\AspectRatios.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\Breakpoints.cs">
+      <Link>Enumerations\Breakpoints.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\ButtonSizes.cs">
       <Link>Enumerations\ButtonSizes.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\InputSizes.cs">
+      <Link>Enumerations\InputSizes.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Enumerations\PopoverPositions.cs">
       <Link>Enumerations\PopoverPositions.cs</Link>
@@ -122,6 +150,12 @@
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\FieldSet.cs">
       <Link>FieldSet.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\FormGroup.cs">
+      <Link>FormGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Glyphicon.cs">
+      <Link>Glyphicon.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\GridView.cs">
       <Link>GridView.cs</Link>
@@ -144,6 +178,9 @@
     <Compile Include="..\Tie.Controls.Bootstrap\Helpers\StringHelper.cs">
       <Link>Helpers\StringHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\HyperLinkButton.cs">
+      <Link>HyperLinkButton.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\IListItem.cs">
       <Link>IListItem.cs</Link>
     </Compile>
@@ -158,6 +195,18 @@
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Label.cs">
       <Link>Label.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ListBox.cs">
+      <Link>ListBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ListGroup.cs">
+      <Link>ListGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ListGroupItem.cs">
+      <Link>ListGroupItem.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ListGroupItemCollection.cs">
+      <Link>ListGroupItemCollection.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\ListHeader.cs">
       <Link>ListHeader.cs</Link>
@@ -201,11 +250,26 @@
     <Compile Include="..\Tie.Controls.Bootstrap\ProgressBar.cs">
       <Link>ProgressBar.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ProgressBarCollection.cs">
+      <Link>ProgressBarCollection.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\RadioButton.cs">
+      <Link>RadioButton.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\RadioButtonList.cs">
+      <Link>RadioButtonList.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ResponsiveEmbed.cs">
+      <Link>ResponsiveEmbed.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Row.cs">
       <Link>Row.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\StackedProgressBars.cs">
+      <Link>StackedProgressBars.cs</Link>
     </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\TabCollection.cs">
       <Link>TabCollection.cs</Link>
@@ -216,11 +280,35 @@
     <Compile Include="..\Tie.Controls.Bootstrap\TabPage.cs">
       <Link>TabPage.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\TextBox.cs">
+      <Link>TextBox.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\TextWebControl.cs">
+      <Link>TextWebControl.cs</Link>
+    </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\ToolTip.cs">
+      <Link>ToolTip.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\Well.cs">
       <Link>Well.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\Tie.Controls.Bootstrap\Resources\paypal\bootstrap-accessibility.min.css">
+      <Link>Resources\paypal\bootstrap-accessibility.min.css</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Tie.Controls.Bootstrap\Resources\paypal\bootstrap-accessibility.min.js">
+      <Link>Resources\paypal\bootstrap-accessibility.min.js</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Tie.Controls.Bootstrap\Resources\jongund\bootstrap-accessibility.min.css">
+      <Link>Resources\jongund\bootstrap-accessibility.min.css</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Tie.Controls.Bootstrap\Resources\jongund\bootstrap-accessibility.min.js">
+      <Link>Resources\jongund\bootstrap-accessibility.min.js</Link>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

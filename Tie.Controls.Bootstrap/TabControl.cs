@@ -18,7 +18,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
@@ -48,7 +47,7 @@ namespace Tie.Controls.Bootstrap
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [ParseChildren(true, "TabPages")]
     [PersistChildren(false)]
-    public class TabControl : WebControl, INamingContainer, IPostBackDataHandler
+    public class TabControl : AccessibleWebControl, INamingContainer, IPostBackDataHandler
     {
         /// <summary>
         /// Occurs when the <see cref="ActiveTabPage"/> property has changed.

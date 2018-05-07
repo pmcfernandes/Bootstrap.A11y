@@ -38,7 +38,7 @@ namespace Tie.Controls.Bootstrap
     /// </summary>
     [ToolboxData("<{0}:Well runat=server></{0}:Well>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
-    public class Well : System.Web.UI.WebControls.Label, INamingContainer
+    public class Well : TextWebControl, INamingContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Well"/> class.

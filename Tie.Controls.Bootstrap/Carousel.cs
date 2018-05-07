@@ -16,7 +16,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
@@ -31,7 +30,7 @@ namespace Tie.Controls.Bootstrap
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
-    public class Carousel : WebControl, INamingContainer
+    public class Carousel : AccessibleWebControl, INamingContainer
     {
         readonly CarouselCollection _Items;
 

@@ -45,7 +45,7 @@ namespace Tie.Controls.Bootstrap
     [ToolboxData("<{0}:Label runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
     [DefaultProperty("Text")]
-    public class Label : System.Web.UI.WebControls.Label
+    public class Label : TextWebControl
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Label" /> class.

@@ -17,7 +17,6 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
@@ -44,7 +43,7 @@ namespace Tie.Controls.Bootstrap
     [DefaultProperty("CssClass")]
     [ParseChildren(true, "Content")]
     [PersistChildren(true)]
-    public class Alert : WebControl, INamingContainer
+    public class Alert : AccessibleWebControl, INamingContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Alert" /> class.
