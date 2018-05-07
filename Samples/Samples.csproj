@@ -57,21 +57,63 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="components\alerts.aspx" />
+    <Content Include="components\badges.aspx" />
+    <Content Include="components\breadcrumbs.aspx" />
+    <Content Include="components\btn-dropdowns.aspx" />
+    <Content Include="components\btn-groups.aspx" />
+    <Content Include="components\ComponentsContents.ascx" />
+    <Content Include="components\default.aspx" />
+    <Content Include="components\dropdowns.aspx" />
+    <Content Include="components\glyphicons.aspx" />
+    <Content Include="components\input-groups.aspx" />
+    <Content Include="components\jumbotron.aspx" />
+    <Content Include="components\labels.aspx" />
+    <Content Include="components\list-group.aspx" />
+    <Content Include="components\media.aspx" />
+    <Content Include="components\navbar.aspx" />
+    <Content Include="components\pagination.aspx" />
+    <Content Include="components\responsive-embed.aspx" />
+    <Content Include="components\wells.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\docs.css" />
+    <Content Include="css\buttons.aspx" />
+    <Content Include="css\CssContents.ascx" />
+    <Content Include="css\default.aspx" />
+    <Content Include="css\forms.aspx" />
+    <Content Include="css\grid.aspx" />
+    <Content Include="css\images.aspx" />
+    <Content Include="css\tables.aspx" />
+    <Content Include="css\type.aspx" />
+    <Content Include="default.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="getting-started.aspx" />
+    <Content Include="javascript\affix.aspx" />
+    <Content Include="javascript\carousel.aspx" />
+    <Content Include="configuration.aspx" />
+    <Content Include="javascript\default.aspx" />
+    <Content Include="javascript\JavaScriptContents.ascx" />
+    <Content Include="components\panels.aspx" />
+    <Content Include="javascript\accordions.aspx" />
+    <Content Include="javascript\modal-remote.html" />
+    <Content Include="javascript\modals.aspx" />
+    <Content Include="javascript\popovers.aspx" />
+    <Content Include="javascript\tabs.aspx" />
+    <Content Include="javascript\tooltips.aspx" />
     <Content Include="packages.config" />
+    <Content Include="App_Browsers\BrowserFile1.browser" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="App_Browsers\BrowserFile1.browser" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="components\progress.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
@@ -79,12 +121,19 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="getting-started.aspx.cs">
-      <DependentUpon>getting-started.aspx</DependentUpon>
+    <Compile Include="css\forms.aspx.cs">
+      <DependentUpon>forms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="getting-started.aspx.designer.cs">
-      <DependentUpon>getting-started.aspx</DependentUpon>
+    <Compile Include="css\forms.aspx.designer.cs">
+      <DependentUpon>forms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="css\tables.aspx.cs">
+      <DependentUpon>tables.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="css\tables.aspx.designer.cs">
+      <DependentUpon>tables.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">

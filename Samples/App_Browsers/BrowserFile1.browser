@@ -7,6 +7,7 @@
     <controlAdapters>
         <adapter controlType="System.Web.UI.WebControls.TextBox" adapterType="Tie.Controls.Bootstrap.Adapters.InputAdapter, Tie.Controls.Bootstrap" />
         <adapter controlType="System.Web.UI.WebControls.DropDownList" adapterType="Tie.Controls.Bootstrap.Adapters.InputAdapter, Tie.Controls.Bootstrap" />
+        <adapter controlType="System.Web.UI.WebControls.ListBox" adapterType="Tie.Controls.Bootstrap.Adapters.InputAdapter, Tie.Controls.Bootstrap" />
     </controlAdapters>
   </browser>
 </browsers>

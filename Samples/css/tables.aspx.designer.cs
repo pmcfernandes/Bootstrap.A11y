@@ -7,72 +7,63 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Samples {
+namespace Samples.css {
     
     
-    public partial class Site {
+    public partial class Tables {
         
         /// <summary>
-        /// head control.
+        /// gvBasic control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+        protected global::Tie.Controls.Bootstrap.GridView gvBasic;
         
         /// <summary>
-        /// form1 control.
+        /// gvStriped control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::Tie.Controls.Bootstrap.GridView gvStriped;
         
         /// <summary>
-        /// NavBar1 control.
+        /// gvBordered control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.NavBar NavBar1;
+        protected global::Tie.Controls.Bootstrap.GridView gvBordered;
         
         /// <summary>
-        /// Hamburger1 control.
+        /// gvHover control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Hamburger Hamburger1;
+        protected global::Tie.Controls.Bootstrap.GridView gvHover;
         
         /// <summary>
-        /// Container1 control.
+        /// gvCondensed control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Container Container1;
+        protected global::Tie.Controls.Bootstrap.GridView gvCondensed;
         
         /// <summary>
-        /// header control.
+        /// gvResponsive control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.PageHeader header;
-        
-        /// <summary>
-        /// MainContent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::Tie.Controls.Bootstrap.GridView gvResponsive;
     }
 }
