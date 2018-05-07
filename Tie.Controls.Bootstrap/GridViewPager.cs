@@ -1,6 +1,7 @@
-﻿// InputAdapter.cs
+﻿// GridViewPager.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -14,7 +15,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -22,6 +22,9 @@ using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a paginator for use with a <see cref="System.Web.UI.WebControls.GridView"/>.
+    /// </summary>
     [ToolboxData("<{0}:GridViewPager runat=server></{0}:GridViewPager>")]
     public class GridViewPager : WebControl, INamingContainer, IPostBackDataHandler
     {
@@ -35,10 +38,12 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Initializes a new instance of the <see cref="GridViewPager"/> class.
         /// </summary>
-        public GridViewPager()
-            : base()
+        public GridViewPager() : base(HtmlTextWriterTag.Ul)
         {
-            
+            this.GridViewID = String.Empty;
+            this.Label = "Grid Pages";
+            this.PreviousArrowVisible = true;
+            this.NextArrowVisible = true;
         }
 
         /// <summary>
@@ -51,8 +56,50 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string GridViewID
         {
-            get { return (string)ViewState["GridViewID"]; }
-            set { ViewState["GridViewID"] = value; }
+            get { return (string)this.ViewState["GridViewID"]; }
+            set { this.ViewState["GridViewID"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a label to be shown to screen readers.
+        /// </summary>
+        /// <value>
+        /// The label to be shown to screen readers.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue("Grid Pages")]
+        public string Label
+        {
+            get { return (string)this.ViewState["Label"]; }
+            set { this.ViewState["Label"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to show the previous page arrow.
+        /// </summary>
+        /// <value>
+        /// Whether to show the previous page arrow.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool PreviousArrowVisible
+        {
+            get { return (bool)this.ViewState["PreviousArrowVisible"]; }
+            set { this.ViewState["PreviousArrowVisible"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to show the next page arrow.
+        /// </summary>
+        /// <value>
+        /// Whether to show the next page arrow.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool NextArrowVisible
+        {
+            get { return (bool)this.ViewState["NextArrowVisible"]; }
+            set { this.ViewState["NextArrowVisible"] = value; }
         }
 
         #region IPostBackDataHandler methods
@@ -67,14 +114,14 @@ namespace Tie.Controls.Bootstrap
         /// </returns>
         public bool LoadPostData(string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
         {
-            if (!(postCollection["__EVENTTARGET"] == this.UniqueID))
+            if (postCollection["__EVENTTARGET"] != this.UniqueID)
             {
                 return false;
             }
 
             int pageIndex = Convert.ToInt32(postCollection["__EVENTARGUMENT"]) - 1;
 
-#if _4_0
+#if _4_0 || _4_5
             this.GridView.SetPageIndex(pageIndex);
 #else
             this.GridView.PageIndex = pageIndex;
@@ -96,7 +143,9 @@ namespace Tie.Controls.Bootstrap
         private void OnPageIndexChanged()
         {
             if (PageIndexChanged != null)
-                PageIndexChanged(this, new PageChangedEventArgs() { Index = this.GridView.PageIndex });
+            {
+                PageIndexChanged(this, new PageChangedEventArgs { Index = this.GridView.PageIndex });
+            }
         }
 
         #endregion
@@ -109,10 +158,9 @@ namespace Tie.Controls.Bootstrap
         {
             int intTotalRows = 0;
 
-            if (this.GridView.DataSource is System.Data.DataSet)
+            System.Data.DataSet ds = this.GridView.DataSource as System.Data.DataSet;
+            if (ds != null)
             {
-                System.Data.DataSet ds = (System.Data.DataSet)this.GridView.DataSource;
-
                 if (String.IsNullOrEmpty(this.GridView.DataMember))
                 {
                     intTotalRows = ds.Tables[0].Rows.Count;
@@ -123,15 +171,16 @@ namespace Tie.Controls.Bootstrap
                 }
             }
 
-            if (this.GridView.DataSource is System.Data.DataTable)
+            System.Data.DataTable dt = this.GridView.DataSource as System.Data.DataTable;
+            if (dt != null)
             {
-               System.Data.DataTable dt  = (System.Data.DataTable)this.GridView.DataSource;
                intTotalRows = dt.Rows.Count;
             }
 
-            if (this.GridView.DataSource is ICollection)
+            ICollection dataSource = this.GridView.DataSource as ICollection;
+            if (dataSource != null)
             {
-                intTotalRows = ((ICollection)this.GridView.DataSource).Count;
+                intTotalRows = dataSource.Count;
             }
 
             return Convert.ToInt32(Math.Ceiling(Decimal.Divide((decimal)intTotalRows, (decimal)this.GridView.PageSize)));
@@ -145,99 +194,48 @@ namespace Tie.Controls.Bootstrap
         void ctrl_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             this.GridView.PageIndex = e.NewPageIndex;
-           // this.GridView.DataBind();
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(EventArgs e)
         {
-            this.GridView = ControlFinder.GetControlById(this.GridViewID) as System.Web.UI.WebControls.GridView;
-            this.GridView.PageIndexChanging += ctrl_PageIndexChanging;
+            this.GridView = ControlHelper.GetControlById(Page, this.GridViewID) as System.Web.UI.WebControls.GridView;
 
             if (this.GridView == null)
             {
-                return;
+                this.Visible = false;
             }
-
-            this.Page.RegisterRequiresPostBack(this);
-            base.OnInit(e);
-        }
-
-        /// <summary>
-        /// Renders the contents.
-        /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
-        {
-            for (int i = 0; i < GetTotalPages(); i++)
+            else
             {
-                if (this.GridView.PageIndex == i)
-                {
-                    output.AddAttribute(HtmlTextWriterAttribute.Class, "active");
-                }
-
-                output.RenderBeginTag(HtmlTextWriterTag.Li);
-
-                output.AddAttribute(HtmlTextWriterAttribute.Href, Page.ClientScript.GetPostBackClientHyperlink(this, (i + 1).ToString(), false));
-                output.RenderBeginTag(HtmlTextWriterTag.A);
-                output.Write((i + 1).ToString());
-                output.RenderEndTag();
-
-                output.RenderEndTag();
+                this.GridView.PageIndexChanging += ctrl_PageIndexChanging;
+                this.Page.RegisterRequiresPostBack(this);
             }
-
-            this.RenderChildren(output);
-        }
-       
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            base.OnInit(e);
         }
 
         /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
+        {
+            PagingHelper.RenderPagingElement(writer, this, this.GridView.PageIndex, GetTotalPages(), PreviousArrowVisible, NextArrowVisible);
+
+            this.RenderChildren(writer);
+        }
+       
+        /// <summary>
+        /// Renders the control to the specified HTML writer.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-
+            ControlHelper.EnsureCssClassPresent(this, "pagination");
+            writer.AddAttribute("aria-label", Label);
             base.Render(writer);
         }
-
-        /// <summary>
-        /// Builds the CSS.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
-        {
-            string str = "pagination";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str;
-        }
-
     }
 }

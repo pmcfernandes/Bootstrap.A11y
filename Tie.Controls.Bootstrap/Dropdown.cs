@@ -1,6 +1,7 @@
 ﻿// Dropdown.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,30 +13,33 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap drop-down.
+    /// </summary>
     [ToolboxData("<{0}:Dropdown runat=server></{0}:Dropdown>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.DropDownList))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
-    public class Dropdown : WebControl, INamingContainer
+    public class Dropdown : AccessibleWebControl, INamingContainer
     {
-        private ListItemCollection _items;
+        readonly ListItemCollection _items;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DropdownMenu" /> class.
+        /// Initializes a new instance of the <see cref="Dropdown" /> class.
         /// </summary>
         public Dropdown()
-            : base()
         {
             this._items = new ListItemCollection();
             this.RightToLeft = false;
+            this.Expanded = false;
             this.DropUp = false;
             this.Text = "";
         }
@@ -50,8 +54,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool RightToLeft
         {
-            get { return (bool)ViewState["RightToLeft"]; }
-            set { ViewState["RightToLeft"] = value; }
+            get { return (bool)this.ViewState["RightToLeft"]; }
+            set { this.ViewState["RightToLeft"] = value; }
         }
 
         /// <summary>
@@ -64,8 +68,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool DropUp
         {
-            get { return (bool)ViewState["DropUp"]; }
-            set { ViewState["DropUp"] = value; }
+            get { return (bool)this.ViewState["DropUp"]; }
+            set { this.ViewState["DropUp"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [expanded].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [drop up]; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(false)]
+        public bool Expanded
+        {
+            get { return (bool)this.ViewState["Expanded"]; }
+            set { this.ViewState["Expanded"] = value; }
         }
 
         /// <summary>
@@ -78,8 +96,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Text
         {
-            get { return (string)ViewState["Text"]; }
-            set { ViewState["Text"] = value; }
+            get { return (string)this.ViewState["Text"]; }
+            set { this.ViewState["Text"] = value; }
         }
 
         /// <summary>
@@ -96,21 +114,26 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            if (ShouldRenderOuterDiv())
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+                writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            }
 
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "btn btn-default dropdown-toggle");
+            string buttonId = ClientID + "_btn";
+            writer.AddAttribute("id", buttonId);
             writer.AddAttribute("type", "button");
             writer.AddAttribute("data-toggle", "dropdown");
             writer.AddAttribute("aria-haspopup", "true");
-            writer.AddAttribute("aria-expanded", "true");
+            writer.AddAttribute("aria-expanded", StringHelper.ToLower(Expanded));
             writer.RenderBeginTag(HtmlTextWriterTag.Button);
             writer.Write(this.Text);
 
@@ -121,26 +144,40 @@ namespace Tie.Controls.Bootstrap
             writer.RenderEndTag(); // Button
 
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCssInternal());
+            writer.AddAttribute("aria-labelledby", buttonId);
             writer.RenderBeginTag(HtmlTextWriterTag.Ul);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Decides whether or not the outer div (classed dropdown/dropup) should be rendered.
+        /// If this is a descendant of a ButtonGroup, that div should not be rendered.
+        /// </summary>
+        /// <returns>True if the div should be rendered</returns>
+        private bool ShouldRenderOuterDiv()
+        {
+            Control p = this.Parent;
+            while (p != null)
+            {
+                if (p is ButtonGroup)
+                {
+                    return false;
+                }
+                p = p.Parent;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderEndTag(HtmlTextWriter writer)
         {
             writer.RenderEndTag();
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Writes the <see cref="T:System.Web.UI.WebControls.BulletedList" /> control content to the specified <see cref="T:System.Web.UI.HtmlTextWriter" /> object for display on the client.
-        /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        protected override void Render(HtmlTextWriter writer)
-        {
-            base.Render(writer);
+            if (ShouldRenderOuterDiv())
+            {
+                writer.RenderEndTag();
+            }
         }
 
         /// <summary>
@@ -149,17 +186,17 @@ namespace Tie.Controls.Bootstrap
         /// <param name="obj">An <see cref="T:System.Object" /> that represents the parsed element.</param>
         protected override void AddParsedSubObject(object obj)
         {
-            if (obj is ListItem || obj is ListHeader | obj is ListSeparator)
+            IListItem listItem = obj as IListItem;
+            if (listItem != null)
             {
-                Items.Add((IListItem)obj);
-                return;
+                this.Items.Add(listItem);
             }
-        }       
+        }
 
         /// <summary>
-        /// Renders the list items of a <see cref="T:System.Web.UI.WebControls.BulletedList" /> control as bullets into the specified <see cref="T:System.Web.UI.HtmlTextWriter" />.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
             foreach (Control item in this.Items)
@@ -174,14 +211,10 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = (this.DropUp ? "dropup" : "dropdown");
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder(this.DropUp ? "dropup" : "dropdown");
+            StringHelper.AppendIf(classes, this.Expanded, " open");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
         /// <summary>
@@ -190,14 +223,7 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCssInternal()
         {
-            string str = "dropdown-menu";
-
-            if (this.RightToLeft == true)
-            {
-                str += " dropdown-menu-right";
-            }
-
-            return str.Trim();
+            return StringHelper.AppendIf("dropdown-menu", this.RightToLeft, " dropdown-menu-right");
         }
 
         /// <summary>

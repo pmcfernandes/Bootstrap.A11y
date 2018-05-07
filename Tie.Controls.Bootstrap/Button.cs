@@ -1,6 +1,7 @@
 ﻿// Button.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -15,40 +16,49 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Contextual styles used on Bootstrap Buttons.
+    /// </summary>
     public enum ButtonTypes
     {
+        /// <summary>Default style (usually gray)</summary>
         Default = 0,
+        /// <summary>Primary brand color</summary>
         Primary = 1,
+        /// <summary>Indicates informational messages (usually light-blue)</summary>
         Info = 2,
+        /// <summary>Indicates a successful or positive action (usually green)</summary>
         Success = 3,
+        /// <summary>Indicates caution should be taken with this action (usually yellow-orange)</summary>
         Warning = 4,
+        /// <summary>Indicates a dangerous or potentially negative action (usually red)</summary>
         Danger = 5,
+        /// <summary>Inverted color scheme</summary>
         Inverse = 6,
+        /// <summary>Deemphasize a button by making it look like a link while maintaining button behavior (buttons only)</summary>
         Link = 7
     }
 
-    public enum ButtonSizes
-    {
-        Default = 0,
-        Large = 1,
-        Small = 2,
-        Mini = 3
-    }
-
+    /// <summary>
+    /// Represents a Bootstrap button.
+    /// </summary>
     [ToolboxData("<{0}:Button runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Button))]
     [DefaultProperty("Text")]
+    [ParseChildren(true, "Content")]
+    [PersistChildren(false)]
     public class Button : System.Web.UI.WebControls.Button, INamingContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Button" /> class.
         /// </summary>
         public Button()
-            : base()
         {
             this.ButtonType = ButtonTypes.Default;
             this.ButtonSize = ButtonSizes.Default;
@@ -73,6 +83,21 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
+        /// Gets or sets the contents.
+        /// </summary>
+        /// <value>
+        /// The contents.
+        /// </value>
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TemplateContainer(typeof(Panel))]
+        [TemplateInstance(TemplateInstance.Single)]
+        public virtual ITemplate Content
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the button identifier.
         /// </summary>
         /// <value>
@@ -82,8 +107,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string ModalID
         {
-            get { return (string)ViewState["ModalID"]; }
-            set { ViewState["ModalID"] = value; }
+            get { return (string)this.ViewState["ModalID"]; }
+            set { this.ViewState["ModalID"] = value; }
         }
 
         /// <summary>
@@ -96,8 +121,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Block
         {
-            get { return (bool)ViewState["Block"]; }
-            set { ViewState["Block"] = value; }
+            get { return (bool)this.ViewState["Block"]; }
+            set { this.ViewState["Block"] = value; }
         }
 
         /// <summary>
@@ -110,8 +135,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Pressed
         {
-            get { return (bool)ViewState["Pressed"]; }
-            set { ViewState["Pressed"] = value; }
+            get { return (bool)this.ViewState["Pressed"]; }
+            set { this.ViewState["Pressed"] = value; }
         }
 
         /// <summary>
@@ -124,8 +149,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(ButtonTypes.Default)]
         public ButtonTypes ButtonType
         {
-            get { return (ButtonTypes)ViewState["ButtonType"]; }
-            set { ViewState["ButtonType"] = value; }
+            get { return (ButtonTypes)this.ViewState["ButtonType"]; }
+            set { this.ViewState["ButtonType"] = value; }
         }
 
         /// <summary>
@@ -138,8 +163,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(ButtonSizes.Default)]
         public ButtonSizes ButtonSize
         {
-            get { return (ButtonSizes)ViewState["ButtonSize"]; }
-            set { ViewState["ButtonSize"] = value; }
+            get { return (ButtonSizes)this.ViewState["ButtonSize"]; }
+            set { this.ViewState["ButtonSize"] = value; }
         }
 
         /// <summary>
@@ -148,11 +173,16 @@ namespace Tie.Controls.Bootstrap
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
+            // don't use submit behavior if popover is defined
+            if (Popover != null)
+            {
+                UseSubmitBehavior = false;
+            }
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -171,11 +201,21 @@ namespace Tie.Controls.Bootstrap
 
             if (this.Popover != null)
             {
+                if (this.Popover.DismissOnNextClick)
+                {
+                    throw new InvalidOperationException("Popovers with DismissOnNextClick=\"true\" must be used on HyperLinkButton controls, not Button controls.");
+                }
                 writer.AddAttribute("data-toggle", "popover");
                 writer.AddAttribute("data-container", "body");
                 writer.AddAttribute("data-content", this.Popover.Text);
-                writer.AddAttribute("data-placement", this.Popover.Position.ToString().ToLower());
-
+                if (this.Popover.Position != PopoverPositions.Right)
+                {
+                    writer.AddAttribute("data-placement", PopoverPositionsHelper.ToString(this.Popover.Position));
+                }
+                if (this.Popover.Trigger != Popover.DEFAULT_TRIGGER)
+                {
+                    writer.AddAttribute("data-trigger", TriggersHelper.ToString(this.Popover.Trigger));
+                }
                 if (!String.IsNullOrEmpty(this.Popover.Title))
                 {
                     writer.AddAttribute("title", this.Popover.Title);
@@ -184,30 +224,38 @@ namespace Tie.Controls.Bootstrap
 
             if (!this.UseSubmitBehavior)
             {
-                this.OnClientClick = "return false;";
+                this.OnClientClick = String.Format("return {0};", StringHelper.ToLower(this.Popover != null));
             }
 
             this.CssClass = this.BuildCss();            
+            this.Attributes.Add("type", "button");
             this.AddAttributesToRender(writer);
             writer.RenderBeginTag(HtmlTextWriterTag.Button);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Renders the contents of the control to the specified writer.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> object that represents the output stream to render HTML content on the client.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
-            writer.Write(this.Text);
+            string text = this.Text;
+            bool hasText = !String.IsNullOrEmpty(text);
+            if (hasText)
+            {
+                writer.Write(this.Text);
+            }
+            else if(this.Content != null)
+            {
+                var container = new Control();
+                container.ID = "container";
+                this.Content.InstantiateIn(container);
+                container.RenderControl(writer);
+            }
+            else
+            {
+                this.Visible = false;
+            }
             base.RenderContents(writer);
         }
 
@@ -217,106 +265,27 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "btn";
-            str += " " + this.GetCssButtonType();
-            str += " " + this.GetCssButtonSize();
-      
-            if (this.Block == true)
-            {
-                str += " btn-block";
-            }
-
-            if (this.Enabled == false)
-            {
-                str += " disabled";
-            }
-
-            if (this.Pressed == true)
-            {
-                str += " active";
-            }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("btn");
+            classes.Append(" btn-" + StringHelper.ToLower(this.ButtonType));
+            classes.Append(ButtonSizesHelper.GetClassName(ButtonSize));
+            StringHelper.AppendIf(classes, this.Block, " btn-block");
+            StringHelper.AppendIf(classes, !this.Enabled, " disabled");
+            StringHelper.AppendIf(classes, this.Pressed, " active");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
         /// <summary>
-        /// Gets the size of the CSS button.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
-        /// <returns></returns>
-        private string GetCssButtonSize()
+        /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
+        protected override void OnInit(EventArgs e)
         {
-            string str = "";
-
-            switch (this.ButtonSize)
+            base.OnInit(e);
+            if(Popover != null)
             {
-                case ButtonSizes.Large:
-                    str += "btn-lg";
-                    break;
-
-                case ButtonSizes.Small:
-                    str += "btn-sm";
-                    break;
-
-                case ButtonSizes.Mini:
-                    str += "btn-xs";
-                    break;
-
-                default:
-                    break;
+                Popover.RegisterJsInit(Page);
             }
-
-            return str;
-        }
-
-        /// <summary>
-        /// Gets the type of the CSS button.
-        /// </summary>
-        /// <returns></returns>
-        private string GetCssButtonType()
-        {
-            string str = "";
-
-            switch (this.ButtonType)
-            {
-                case ButtonTypes.Primary:
-                    str = "btn-primary";
-                    break;
-
-                case ButtonTypes.Info:
-                    str = "btn-info";
-                    break;
-
-                case ButtonTypes.Success:
-                    str = "btn-success";
-                    break;
-
-                case ButtonTypes.Warning:
-                    str = "btn-warning";
-                    break;
-
-                case ButtonTypes.Danger:
-                    str = "btn-danger";
-                    break;
-
-                case ButtonTypes.Inverse:
-                    str = "btn-inverse";
-                    break;
-
-                case ButtonTypes.Link:
-                    str = "btn-link";
-                    break;
-
-                default:
-                    str = "btn-default";
-                    break;
-            }
-
-            return str;
         }
     }
 }

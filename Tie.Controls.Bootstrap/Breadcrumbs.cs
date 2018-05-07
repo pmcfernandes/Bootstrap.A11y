@@ -1,6 +1,7 @@
 ﻿// Breadcrumbs.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,30 +14,32 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap breadcrumbs list.
+    /// </summary>
     [ToolboxData("<{0}:Breadcrumbs runat=server></{0}:Breadcrumbs>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.BulletedList))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
     public class Breadcrumbs : WebControl, INamingContainer
     {
-        private BreadcrumbsCollection _items;
+        readonly BreadcrumbsCollection _items;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Menu"/> class.
+        /// Initializes a new instance of the <see cref="Breadcrumbs"/> class.
         /// </summary>
         public Breadcrumbs()
-            : base()
         {
             this._items = new BreadcrumbsCollection(this);
+            this.AddSchemaMarkup = true;
         }
 
         /// <summary>
@@ -53,28 +56,39 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Gets or sets a value indicating whether to include Schema.org markup.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if schema should be included; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool AddSchemaMarkup
+        {
+            get { return (bool)this.ViewState["AddSchemaMarkup"]; }
+            set { this.ViewState["AddSchemaMarkup"] = value; }
+        }
+
+        /// <summary>
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            writer.AddAttribute("aria-label", "Breadcrumb");
+            if(AddSchemaMarkup)
+            {
+                writer.AddAttribute("itemscope", String.Empty);
+                writer.AddAttribute("itemtype", "http://schema.org/BreadcrumbList");
+            }
             writer.RenderBeginTag(HtmlTextWriterTag.Ol);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Writes the <see cref="T:System.Web.UI.WebControls.BulletedList" /> control content to the specified <see cref="T:System.Web.UI.HtmlTextWriter" /> object for display on the client.
-        /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
@@ -89,10 +103,10 @@ namespace Tie.Controls.Bootstrap
         /// <param name="obj">An <see cref="T:System.Object" /> that represents the parsed element.</param>
         protected override void AddParsedSubObject(object obj)
         {
-            if (obj is BreadcrumbsItem)
+            BreadcrumbsItem crumb = obj as BreadcrumbsItem;
+            if (crumb != null)
             {
-                Items.Add((BreadcrumbsItem)obj);
-                return;
+                Items.Add(crumb);
             }
         }
 
@@ -109,9 +123,9 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the list items of a <see cref="T:System.Web.UI.WebControls.BulletedList" /> control as bullets into the specified <see cref="T:System.Web.UI.HtmlTextWriter" />.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
             for (int i = 0; i < this.Items.Count; i++)
@@ -122,10 +136,25 @@ namespace Tie.Controls.Bootstrap
                 {
                     item.NavigateUrl = "";
                     writer.AddAttribute(HtmlTextWriterAttribute.Class, "active");
+                    writer.AddAttribute("aria-current", "page");
                 }
 
+                if(AddSchemaMarkup)
+                {
+                    writer.AddAttribute("itemscope", String.Empty);
+                    writer.AddAttribute("itemtype", "http://schema.org/ListItem");
+                    writer.AddAttribute("itemprop", "itemListElement");
+                }
                 writer.RenderBeginTag(HtmlTextWriterTag.Li);
                 item.RenderControl(writer);
+
+                if (AddSchemaMarkup)
+                {
+                    writer.AddAttribute("content", (i + 1).ToString());
+                    writer.AddAttribute("itemprop", "position");
+                    writer.RenderBeginTag(HtmlTextWriterTag.Meta);
+                    writer.RenderEndTag();
+                }
                 writer.RenderEndTag();
             }
         }
@@ -136,14 +165,7 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "breadcrumb";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            return StringHelper.AppendWithSpaceIfNotEmpty("breadcrumb", this.CssClass);
         }
     }
 }

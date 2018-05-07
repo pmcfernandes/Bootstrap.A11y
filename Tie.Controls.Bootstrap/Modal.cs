@@ -1,6 +1,7 @@
 ﻿// Modal.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -16,33 +17,58 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-
+    /// <summary>
+    /// The three sizes a modal may have.
+    /// </summary>
     public enum ModalSizes
     {        
+        /// <summary>A smaller size.</summary>
         Small = 0,
+        /// <summary>The default size.</summary>
         Default = 1,
+        /// <summary>A larger size.</summary>
         Large = 2
     }
 
+    /// <summary>
+    /// The background shown behind a <see cref="Modal"/> when it is shown.
+    /// </summary>
+    public enum ModalBackdrops : byte
+    {
+        /// <summary>No background.</summary>
+        None = 0,
+        /// <summary>Standard background, closes modal on click.</summary>
+        Default = 1,
+        /// <summary>Standard background, does not close modal on click.</summary>
+        Static = 2
+    }
+
+    /// <summary>
+    /// Represents a Bootstrap modal.
+    /// </summary>
     [ToolboxData("<{0}:Modal runat=server></{0}:Modal>")]
     [DefaultProperty("Text")]
     [ParseChildren(true, "Content")]
     [PersistChildren(false)]
-    public class Modal : WebControl, INamingContainer
+    public class Modal : AccessibleWebControl, INamingContainer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Modal"/> class.
         /// </summary>
         public Modal()
-            : base()
         {
             this.Title = "";
+            this.TitleTag = HtmlTextWriterTag.H4;
             this.Fade = true;
-            this.Size = ModalSizes.Default;            
+            this.Size = ModalSizes.Default;
+            this.BackdropType = ModalBackdrops.Default;
+            this.CloseOnEscKey = true;
+            this.Show = true;
+            this.RemotePath = String.Empty;
         }
 
         /// <summary>
@@ -55,8 +81,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Title
         {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
+            get { return (string)this.ViewState["Title"]; }
+            set { this.ViewState["Title"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the tag type (typically a header like h3) to wrap around the title.
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
+        [Category("Behavior")]
+        [DefaultValue(HtmlTextWriterTag.H4)]
+        public HtmlTextWriterTag TitleTag
+        {
+            get { return (HtmlTextWriterTag)this.ViewState["TitleTag"]; }
+            set { this.ViewState["TitleTag"] = value; }
         }
 
         /// <summary>
@@ -66,11 +106,11 @@ namespace Tie.Controls.Bootstrap
         /// The size.
         /// </value>
         [Category("Appearance")]
-        [DefaultValue("")]
+        [DefaultValue(ModalSizes.Default)]
         public ModalSizes Size
         {
-            get { return (ModalSizes)ViewState["Size"]; }
-            set { ViewState["Size"] = value; }
+            get { return (ModalSizes)this.ViewState["Size"]; }
+            set { this.ViewState["Size"] = value; }
         }
 
         /// <summary>
@@ -83,8 +123,52 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(true)]
         public bool Fade
         {
-            get { return (bool)ViewState["Fade"]; }
-            set { ViewState["Fade"] = value; }
+            get { return (bool)this.ViewState["Fade"]; }
+            set { this.ViewState["Fade"] = value; }
+        }
+
+        /// <summary>
+        /// Includes a modal-backdrop element. Alternatively, specify static for a backdrop which doesn't close the modal on click.
+        /// </summary>
+        [Category("Appearance")]
+        [DefaultValue(ModalBackdrops.Default)]
+        public ModalBackdrops BackdropType
+        {
+            get { return (ModalBackdrops)this.ViewState["BackdropType"]; }
+            set { this.ViewState["BackdropType"] = value; }
+        }
+
+        /// <summary>
+        /// If true, closes the modal when escape key is pressed.
+        /// </summary>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool CloseOnEscKey
+        {
+            get { return (bool)this.ViewState["CloseOnEscKey"]; }
+            set { this.ViewState["CloseOnEscKey"] = value; }
+        }
+
+        /// <summary>
+        /// If true, shows the modal when initialized.
+        /// </summary>
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool Show
+        {
+            get { return (bool)this.ViewState["Show"]; }
+            set { this.ViewState["Show"] = value; }
+        }
+
+        /// <summary>
+        /// If a remote URL is provided, content will be loaded via jQuery's load method and injected into the root of the modal element.
+        /// </summary>
+        [Category("Appearance")]
+        [DefaultValue("")]
+        public string RemotePath
+        {
+            get { return (string)this.ViewState["RemotePath"]; }
+            set { this.ViewState["RemotePath"] = value; }
         }
 
         /// <summary>
@@ -119,87 +203,99 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-         /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void Render(HtmlTextWriter writer)
         {
-            writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            this.EnsureClassesPresent();
             writer.AddAttribute(HtmlTextWriterAttribute.Tabindex, "-1");
             writer.AddAttribute("role", "dialog");
+            writer.AddAttribute("aria-labelledby", ClientID + "_title");
+            writer.AddAttribute("aria-hidden", "true");
+
+            switch (BackdropType)
+            {
+                case ModalBackdrops.None:
+                    writer.AddAttribute("data-backdrop", "false");
+                    break;
+                case ModalBackdrops.Static:
+                    writer.AddAttribute("data-backdrop", "static");
+                    break;
+                case ModalBackdrops.Default:
+                default:
+                    // no data attribute needed for default value
+                    break;
+            }
+
+            if (!CloseOnEscKey)
+            {
+                writer.AddAttribute("data-keyboard", "false");
+            }
+
+            if(!Show)
+            {
+                writer.AddAttribute("data-show", "false");
+            }
+
+            if (!String.IsNullOrEmpty(RemotePath))
+            {
+                writer.AddAttribute("data-remote", RemotePath);
+            }
 
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            output.AddAttribute(HtmlTextWriterAttribute.Class, ("modal-dialog " + this.GetModalSize()).Trim());
-            output.AddAttribute("role", "document");
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
+            string cssClass = "modal-dialog";
+            if(Size != ModalSizes.Default)
+            {
+                cssClass = String.Concat(cssClass, " modal-", StringHelper.ToLower(Size));
+            }
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, cssClass);
+            writer.AddAttribute("role", "document");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "modal-content");
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-content");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "modal-header");
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-header");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            output.AddAttribute(HtmlTextWriterAttribute.Type, "button");
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "close");
-            output.AddAttribute("data-dismiss", "modal");
-            output.AddAttribute("aria-label", "Close");
-            output.RenderBeginTag(HtmlTextWriterTag.Button);
+            writer.AddAttribute(HtmlTextWriterAttribute.Type, "button");
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "close");
+            writer.AddAttribute("data-dismiss", "modal");
+            writer.AddAttribute("aria-hidden", "true");
+            writer.RenderBeginTag(HtmlTextWriterTag.Button);
+            writer.Write("&times;");
+            writer.RenderEndTag(); // Button
 
-            output.AddAttribute("aria-hidden", "true");
-            output.RenderBeginTag(HtmlTextWriterTag.Span);
-            output.Write("&times;");
-            output.RenderEndTag(); // Span
-            output.RenderEndTag(); // Button
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "modal-title");
+            writer.AddAttribute(HtmlTextWriterAttribute.Id, ClientID + "_title");
+            writer.RenderBeginTag(this.TitleTag);
+            writer.Write(this.Title);
+            writer.RenderEndTag(); // TitleTag
 
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "modal-title");
-            output.RenderBeginTag(HtmlTextWriterTag.H4);
-            output.Write(this.Title);
-            output.RenderEndTag(); // H4
+            writer.RenderEndTag(); // Div
 
-            output.RenderEndTag(); // Div
+            this.RenderChildren(writer);
 
-            this.RenderChildren(output);
-
-            output.RenderEndTag(); // Div
-            output.RenderEndTag(); // Div
+            writer.RenderEndTag(); // Div
+            writer.RenderEndTag(); // Div
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -210,17 +306,20 @@ namespace Tie.Controls.Bootstrap
         protected override void CreateChildControls()
         {
             // Remove any controls
-#if _4_0
+#if _4_0 || _4_5
             this.ClearCachedClientID();
 #endif
             this.Controls.Clear();
 
-            // Add all content to a container.
-            var container = new System.Web.UI.WebControls.Panel();
-            container.CssClass = "modal-body";
-            this.Content.InstantiateIn(container);
-            this.Controls.Add(container);
-            
+            if (this.Content != null)
+            {
+                // Add all content to a container.
+                var container = new System.Web.UI.WebControls.Panel();
+                container.CssClass = "modal-body";
+                this.Content.InstantiateIn(container);
+                this.Controls.Add(container);
+            }
+
             if (this.Footer != null)
             {
                 // Add all footer to a container.
@@ -236,12 +335,15 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         public void Open()
         {
+#if !_2_0
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<script type=\"text/javascript\">");
             sb.AppendLine(" $('#" + this.ClientID  + "').modal('show');");
             sb.AppendLine("</script>");
-
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ModalScript", sb.ToString(), false);
+#else
+            throw new InvalidOperationException(".NET 2.0 does not support ScriptManager.");
+#endif
         }
 
         /// <summary>
@@ -249,53 +351,27 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         public void Close()
         {
+#if !_2_0
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<script type=\"text/javascript\">");
             sb.AppendLine(" $('#" + this.ClientID + "').modal('hide');");
             sb.AppendLine("</script>");
-
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ModalScript", sb.ToString(), false);
+#else
+            throw new InvalidOperationException(".NET 2.0 does not support ScriptManager.");
+#endif
         }
 
         /// <summary>
-        /// Builds the CSS.
+        /// Ensures that necessary classes are present on the control before rendering.
         /// </summary>
-        /// <returns></returns>
-        private string BuildCss()
+        protected virtual void EnsureClassesPresent()
         {
-            string str = "modal" + (this.Fade ? " fade" : "");
-            
-            if (!String.IsNullOrEmpty(this.CssClass))
+            ControlHelper.EnsureCssClassPresent(this, "modal");
+            if(Fade)
             {
-                str += " " + this.CssClass;
+                ControlHelper.EnsureCssClassPresent(this, "fade");
             }
-
-            return str.Trim();
-        }
-
-        /// <summary>
-        /// Gets the size of the modal.
-        /// </summary>
-        /// <returns></returns>
-        private string GetModalSize()
-        {
-            string str = "";
-
-            switch (this.Size)
-            {
-                case ModalSizes.Large:
-                    str = "modal-lg";
-                    break;
-
-                case ModalSizes.Small:
-                    str = "modal-sm";
-                    break;
-
-                default:
-                    break;
-            }
-
-            return str.Trim();
         }
 
         /// <summary>

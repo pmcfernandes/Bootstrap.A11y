@@ -1,6 +1,7 @@
 ﻿// Affix.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,15 +13,15 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Web.UI;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap affix.
+    /// </summary>
     [ToolboxData("<{0}:Affix runat=server></{0}:Affix>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [PersistChildren(false)]
@@ -30,7 +31,6 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Affix"/> class.
         /// </summary>
         public Affix()
-            : base()
         {
             this.OffsetTop = 100;
             this.OffsetBottom = 200;
@@ -46,8 +46,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(100)]
         public int OffsetTop
         {
-            get { return (int)ViewState["OffsetTop"]; }
-            set { ViewState["OffsetTop"] = value; }
+            get { return (int)this.ViewState["OffsetTop"]; }
+            set { this.ViewState["OffsetTop"] = value; }
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public int OffsetBottom
         {
-            get { return (int)ViewState["OffsetBottom"]; }
-            set { ViewState["OffsetBottom"] = value; }
+            get { return (int)this.ViewState["OffsetBottom"]; }
+            set { this.ViewState["OffsetBottom"] = value; }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -83,21 +83,11 @@ namespace Tie.Controls.Bootstrap
             writer.AddAttribute("data-spy", "affix");
             writer.AddAttribute("data-offset-top", this.OffsetTop.ToString());
             writer.AddAttribute("data-offset-bottom", this.OffsetBottom.ToString());
-
             base.RenderBeginTag(writer);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            base.RenderEndTag(writer);
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)

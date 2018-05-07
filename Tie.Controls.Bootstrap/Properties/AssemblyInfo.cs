@@ -37,4 +37,8 @@ using System.Web.UI;
 [assembly: AssemblyVersion("1.0.7.0")]
 [assembly: AssemblyFileVersion("1.0.7.0")]
 
-
+// web resource attributes for bootstrap accessibility
+[assembly: WebResource(Tie.Controls.Bootstrap.AccessibleWebControl.PayPalCssResourceName, Tie.Controls.Bootstrap.AccessibleWebControl.CssMimeType)]
+[assembly: WebResource(Tie.Controls.Bootstrap.AccessibleWebControl.PayPalJsResourceName, Tie.Controls.Bootstrap.AccessibleWebControl.JsMimeType)]
+[assembly: WebResource(Tie.Controls.Bootstrap.AccessibleWebControl.JonGundCssResourceName, Tie.Controls.Bootstrap.AccessibleWebControl.CssMimeType)]
+[assembly: WebResource(Tie.Controls.Bootstrap.AccessibleWebControl.JonGundJsResourceName, Tie.Controls.Bootstrap.AccessibleWebControl.JsMimeType)]

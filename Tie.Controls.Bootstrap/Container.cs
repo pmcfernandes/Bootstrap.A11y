@@ -1,6 +1,7 @@
 // Container.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,14 +13,18 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap container.
+    /// </summary>
     [ToolboxData("<{0}:Container runat=server></{0}:Container>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [DefaultProperty("CssClass")]
@@ -30,8 +35,7 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
         /// </summary>
-        public Container()
-            : base()
+        public Container() : base(HtmlTextWriterTag.Div)
         {
             this.Fluid = false;
         }
@@ -61,26 +65,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Fluid
         {
-            get { return (bool)ViewState["Fluid"]; }
-            set { ViewState["Fluid"] = value; }
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            get { return (bool)this.ViewState["Fluid"]; }
+            set { this.ViewState["Fluid"] = value; }
         }
 
         /// <summary>
@@ -101,16 +87,16 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -138,14 +124,10 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "container" + (this.Fluid ? "-fluid" : "");
-            
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();           
+            StringBuilder classes = new StringBuilder("container");
+            StringHelper.AppendIf(classes, this.Fluid, "-fluid");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
     }
 }

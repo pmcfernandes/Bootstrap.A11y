@@ -1,6 +1,7 @@
 ﻿// Image.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -15,19 +16,30 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-
-    public enum ImageTypes
+    /// <summary>
+    /// CSS effects to apply to an image.
+    /// </summary>
+    public enum ImageTypes : byte
     {
+        /// <summary>No modifications</summary>
         None = 0,
+        /// <summary>Rounded corners</summary>
         Rounded = 1,
+        /// <summary>A circle</summary>
         Circle = 2,
+        /// <summary>An offset border with white padding</summary>
         Polaroid = 3
     }
 
+    /// <summary>
+    /// Represents a Bootstrap image.
+    /// </summary>
     [ToolboxData("<{0}:Image runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [DefaultProperty("ImageUrl")]
@@ -37,7 +49,6 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Image" /> class.
         /// </summary>
         public Image()
-            : base()
         {
             this.ImageType = ImageTypes.None;
             this.Responsive = false;
@@ -53,8 +64,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(ImageTypes.None)]
         public ImageTypes ImageType
         {
-            get { return (ImageTypes)ViewState["ImageType"]; }
-            set { ViewState["ImageType"] = value; }
+            get { return (ImageTypes)this.ViewState["ImageType"]; }
+            set { this.ViewState["ImageType"] = value; }
         }
 
         /// <summary>
@@ -67,8 +78,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Responsive
         {
-            get { return (bool)ViewState["Responsive"]; }
-            set { ViewState["Responsive"] = value; }
+            get { return (bool)this.ViewState["Responsive"]; }
+            set { this.ViewState["Responsive"] = value; }
         }
 
         /// <summary>
@@ -88,15 +99,11 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = (this.Responsive ? "img-responsive" : "");
-            str += " " + this.GetCssImageType();
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder();
+            StringHelper.AppendIf(classes, this.Responsive, "img-responsive");
+            classes.Append(this.GetCssImageType());
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString().TrimStart();
         }
 
         /// <summary>
@@ -105,28 +112,20 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string GetCssImageType()
         {
-            string str = "";
-           
             switch (this.ImageType)
             {
                 case ImageTypes.Rounded:
-                    str = "img-rounded";
-                    break;
+                    return " img-rounded";
 
                 case ImageTypes.Polaroid:
-                    str = "img-thumbnail";
-                    break;
+                    return " img-thumbnail";
 
                 case ImageTypes.Circle:
-                    str = "img-circle";
-                    break;
+                    return " img-circle";
 
                 default:
-                    str = "";
-                    break;
+                    return String.Empty;
             }
-
-            return str;
         }
     }
 }
