@@ -172,11 +172,7 @@ namespace Tie.Controls.Bootstrap
             StringBuilder classes = new StringBuilder("panel");
 
             PanelTypes panelType = GetPanelType();
-            if (panelType != PanelTypes.Default)
-            {
-                classes.Append(" panel-");
-                classes.Append(StringHelper.ToLower(panelType));
-            }
+            classes.Append(" panel-" + StringHelper.ToLower(panelType));
 
             StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
             return classes.ToString();

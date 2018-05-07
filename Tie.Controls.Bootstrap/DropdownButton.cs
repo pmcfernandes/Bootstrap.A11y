@@ -266,10 +266,8 @@ namespace Tie.Controls.Bootstrap
         private string BuildButtonCss()
         {
             StringBuilder classes = new StringBuilder("btn");
-            if(this.ButtonType != ButtonTypes.Default)
-            {
-                classes.Append(" btn-" + StringHelper.ToLower(ButtonType));
-            }
+            classes.Append(" btn-" + StringHelper.ToLower(ButtonType));
+
             classes.Append(ButtonSizesHelper.GetClassName(this.ButtonSize));
             if (!this.Split)
             {
