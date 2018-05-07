@@ -1,6 +1,7 @@
 ﻿// MediaObject.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,20 +14,27 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-    public enum ImageAlign
+    /// <summary>
+    /// Image alignment direction
+    /// </summary>
+    public enum ImageAlign : byte
     {
+        /// <summary>Image goes on the left</summary>
         Left = 0,
+        /// <summary>Image goes on the right</summary>
         Right = 1
     }
 
+    /// <summary>
+    /// Represents a Bootstrap media object.
+    /// </summary>
     [ToolboxData("<{0}:MediaObject runat=server></{0}:MediaObject>")]
     [DefaultProperty("Title")]
     [ParseChildren(true, "Content")]
@@ -37,9 +45,11 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="MediaObject" /> class.
         /// </summary>
         public MediaObject()
-            : base()
         {
+            this.Title = "";
+            this.TitleTag = HtmlTextWriterTag.H4;
             this.ImageAlign = ImageAlign.Left;
+            VerticalAlign = VerticalAlign.NotSet;
             this.NavigationUrl = "#";
         }
 
@@ -68,8 +78,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(ImageAlign.Left)]
         public ImageAlign ImageAlign
         {
-            get { return (ImageAlign)ViewState["ImageAlign"]; }
-            set { ViewState["ImageAlign"] = value; }
+            get { return (ImageAlign)this.ViewState["ImageAlign"]; }
+            set { this.ViewState["ImageAlign"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the vertical alignment.
+        /// </summary>
+        /// <value>
+        /// The vertical alignment.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(VerticalAlign.NotSet)]
+        public VerticalAlign VerticalAlign
+        {
+            get { return (VerticalAlign)this.ViewState["VerticalAlign"]; }
+            set { this.ViewState["VerticalAlign"] = value; }
         }
 
         /// <summary>
@@ -82,8 +106,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("#")]
         public string NavigationUrl
         {
-            get { return (string)ViewState["NavigationUrl"]; }
-            set { ViewState["NavigationUrl"] = value; }
+            get { return (string)this.ViewState["NavigationUrl"]; }
+            set { this.ViewState["NavigationUrl"] = value; }
         }
 
 
@@ -97,8 +121,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Title
         {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
+            get { return (string)this.ViewState["Title"]; }
+            set { this.ViewState["Title"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the tag type (typically a header like h3) to wrap around the title.
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
+        [Category("Behavior")]
+        [DefaultValue(HtmlTextWriterTag.H4)]
+        public HtmlTextWriterTag TitleTag
+        {
+            get { return (HtmlTextWriterTag)this.ViewState["TitleTag"]; }
+            set { this.ViewState["TitleTag"] = value; }
         }
 
         /// <summary>
@@ -111,8 +149,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Description
         {
-            get { return (string)ViewState["Description"]; }
-            set { ViewState["Description"] = value; }
+            get { return (string)this.ViewState["Description"]; }
+            set { this.ViewState["Description"] = value; }
         }
 
         /// <summary>
@@ -126,26 +164,22 @@ namespace Tie.Controls.Bootstrap
         [UrlProperty]
         public string ImageUrl
         {
-            get { return (string)ViewState["ImageUrl"]; }
-            set { ViewState["ImageUrl"] = value; }
+            get { return (string)this.ViewState["ImageUrl"]; }
+            set { this.ViewState["ImageUrl"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Gets or sets the image's alt text.
         /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
+        /// <value>
+        /// The alt text.
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue("")]
+        public string AlternativeText
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            get { return (string)this.ViewState["AlternativeText"]; }
+            set { this.ViewState["AlternativeText"] = value; }
         }
 
         /// <summary>
@@ -162,31 +196,31 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
             if (ImageAlign == Bootstrap.ImageAlign.Left)
             {
-                this.RenderImage(output);
+                this.RenderImage(writer);
             }
             
-            output.AddAttribute(HtmlTextWriterAttribute.Class, "media-body");
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "media-body");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            this.RenderTitle(output);
-            this.RenderDescription(output);
+            this.RenderTitle(writer);
+            this.RenderDescription(writer);
 
-            output.RenderBeginTag(HtmlTextWriterTag.Div);
-            this.RenderChildren(output);
-            output.RenderEndTag();
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            this.RenderChildren(writer);
+            writer.RenderEndTag();
 
-            output.RenderEndTag(); // Div   
+            writer.RenderEndTag(); // Div   
 
             if (ImageAlign == Bootstrap.ImageAlign.Right)
             {
-                this.RenderImage(output);
+                this.RenderImage(writer);
             }
         }
 
@@ -196,18 +230,8 @@ namespace Tie.Controls.Bootstrap
         /// <param name="output">The output.</param>
         private void RenderImage(HtmlTextWriter output)
         {
-            switch (ImageAlign)
-            {
-                case ImageAlign.Left:
-                    output.AddAttribute(HtmlTextWriterAttribute.Class, "media-left");
-                    output.RenderBeginTag(HtmlTextWriterTag.Div);
-                    break;
-
-                case ImageAlign.Right:
-                    output.AddAttribute(HtmlTextWriterAttribute.Class, "media-right");
-                    output.RenderBeginTag(HtmlTextWriterTag.Div);
-                    break;
-            }
+            output.AddAttribute(HtmlTextWriterAttribute.Class, BuildMediaCss());
+            output.RenderBeginTag(HtmlTextWriterTag.Div);
             
             output.AddAttribute(HtmlTextWriterAttribute.Href, ResolveUrl(this.NavigationUrl));
             output.RenderBeginTag(HtmlTextWriterTag.A);            
@@ -215,10 +239,35 @@ namespace Tie.Controls.Bootstrap
             output.AddAttribute(HtmlTextWriterAttribute.Class, "media-object");
             output.AddAttribute("data-src", this.ImageUrl);
             output.AddAttribute("src", this.ImageUrl);
+            output.AddAttribute("alt", AlternativeText);
             output.RenderBeginTag(HtmlTextWriterTag.Img);
             output.RenderEndTag(); // Img
             output.RenderEndTag(); // A
             output.RenderEndTag(); // Div
+        }
+
+        private string BuildMediaCss()
+        {
+            string horizontal = StringHelper.ToLower(ImageAlign);
+            string vertical = GetVerticalSubclass();
+            return String.Format("media-{0} media-{1}", horizontal, vertical);
+        }
+
+        private string GetVerticalSubclass()
+        {
+            if (VerticalAlign == VerticalAlign.Middle)
+            {
+                return "middle";
+            }
+            else if (VerticalAlign == VerticalAlign.Bottom)
+            {
+                return "bottom";
+            }
+            else
+            {
+                return "top";
+            }
+
         }
 
         /// <summary>
@@ -228,7 +277,7 @@ namespace Tie.Controls.Bootstrap
         private void RenderTitle(HtmlTextWriter output)
         {
             output.AddAttribute(HtmlTextWriterAttribute.Class, "media-heading");
-            output.RenderBeginTag(HtmlTextWriterTag.H4);
+            output.RenderBeginTag(this.TitleTag);
             output.Write(this.Title);
             output.RenderEndTag();
         }
@@ -245,14 +294,12 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -271,14 +318,7 @@ namespace Tie.Controls.Bootstrap
 
         private string BuildCss()
         {
-            string str = "media";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            return StringHelper.AppendWithSpaceIfNotEmpty("media", this.CssClass);
         }
     }
 }

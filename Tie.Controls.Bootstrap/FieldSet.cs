@@ -1,6 +1,7 @@
 ﻿// FieldSet.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -20,6 +21,9 @@ using System.Web.UI.WebControls;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap field set.
+    /// </summary>
     [ToolboxData("<{0}:FieldSet runat=server></{0}:FieldSet>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [ParseChildren(true, "Content")]
@@ -29,8 +33,7 @@ namespace Tie.Controls.Bootstrap
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldSet" /> class.
         /// </summary>
-        public FieldSet()
-            : base()
+        public FieldSet() : base(HtmlTextWriterTag.Fieldset)
         {
             this.Legend = "";
         }
@@ -60,26 +63,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Legend
         {
-            get { return (string)ViewState["Legend"]; }
-            set { ViewState["Legend"] = value; }
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Fieldset);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            get { return (string)this.ViewState["Legend"]; }
+            set { this.ViewState["Legend"] = value; }
         }
 
         /// <summary>
@@ -90,7 +75,6 @@ namespace Tie.Controls.Bootstrap
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Style, this.BuildStyle());
 
             if (!String.IsNullOrEmpty(this.CssClass))
             {
@@ -102,28 +86,25 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            output.AddAttribute(HtmlTextWriterAttribute.Style, this.BuildLegendStyle());
-            output.RenderBeginTag(HtmlTextWriterTag.Legend);
-            output.Write(this.Legend);
-            output.RenderEndTag(); // Close Div   
+            writer.RenderBeginTag(HtmlTextWriterTag.Legend);
+            writer.Write(this.Legend);
+            writer.RenderEndTag(); // Close Div   
 
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -139,25 +120,5 @@ namespace Tie.Controls.Bootstrap
             this.Controls.Clear();
             this.Controls.Add(container);
         }
-
-        /// <summary>
-        /// Builds the style.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildStyle()
-        {
-            string str = "position:relative;padding:15px 15px 15px;margin:0 -15px 15px;margin-right:0;margin-left:0;background-color:#fff;border-style:solid;border-color:#ddd;border-width:1px;border-radius:4px 4px 0 0;box-shadow:none;";
-            return str;
-        }
-
-        /// <summary>
-        /// Builds the legend style.
-        /// </summary>
-        /// <returns></returns>
-        private string BuildLegendStyle()
-        {
-            string str = "position:relative;top:21px;margin-bottom:25px;width:auto;border-bottom:none;font-size:12px;font-weight:700;color:#959595;text-transform:uppercase;";
-            return str;
-        }
-    }
+   }
 }

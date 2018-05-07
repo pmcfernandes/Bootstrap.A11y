@@ -1,49 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿// GridViewAdapter.cs
+
+// Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
+
+// This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+// General Public License as published by the Free Software Foundation; either version 2 of the 
+// License, or (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+// the GNU General Public License for more details. You should have received a copy of the GNU 
+// General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
+// Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.Adapters;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap.Adapters
 {
+    /// <summary>
+    /// Adapter to apply Bootstrap classes to a base ASP.NET <see cref="System.Web.UI.WebControls.GridView"/>.
+    /// </summary>
     public class GridViewAdapter : WebControlAdapter
     {
-        private System.Web.UI.WebControls.GridView GridView; 
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="GridViewAdapter"/> class.
+        /// Raises the <see cref="E:System.Web.UI.Control.PreRender" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
-        public GridViewAdapter()
-        {
-            
-        }
-
-        /// <summary>
-        /// Overrides the <see cref="M:System.Web.UI.Control.OnPreRender(System.EventArgs)" /> method for the associated control.
-        /// </summary>
-        /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
+        /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnPreRender(EventArgs e)
         {
-            if (this.Control is GridView)
+            GridView gridView = this.Control as GridView;
+            if (gridView != null)
             {
-                this.GridView = ((System.Web.UI.WebControls.GridView)this.Control);
-                this.GridView.GridLines = GridLines.None;
-                this.GridView.UseAccessibleHeader = true;
-                this.GridView.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+                gridView.GridLines = GridLines.None;
+                gridView.UseAccessibleHeader = true;
+                gridView.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gridView.FooterRow.TableSection = TableRowSection.TableFooter;
+                gridView.TopPagerRow.TableSection = TableRowSection.TableHeader;
+                gridView.BottomPagerRow.TableSection = TableRowSection.TableFooter;
             }
 
             base.OnPreRender(e);
         }
 
         /// <summary>
-        /// Creates the beginning tag for the Web control in the markup that is transmitted to the target browser.
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> containing methods to render the target-specific output.</param>
-        protected override void RenderBeginTag(System.Web.UI.HtmlTextWriter writer)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderBeginTag(HtmlTextWriter writer)
         {
             base.RenderBeginTag(writer);
-            writer.AddAttribute(System.Web.UI.HtmlTextWriterAttribute.Class, "table" + (!String.IsNullOrEmpty(this.Control.CssClass) ? " " + this.Control.CssClass : ""));
+            string tableClass = StringHelper.AppendWithSpaceIfNotEmpty("table", this.Control.CssClass);
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, tableClass);
         }
     }
 }

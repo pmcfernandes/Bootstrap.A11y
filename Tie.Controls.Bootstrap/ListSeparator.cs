@@ -1,6 +1,7 @@
 ﻿// ListSeparator.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,28 +14,19 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a separator in a Bootstrap list.
+    /// </summary>
     [ToolboxData("<{0}:ListSeparator runat=server></{0}:ListSeparator>")]
     [ToolboxItem(false)]
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ListSeparator : Control, INamingContainer, IParserAccessor, IListItem
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ListItem"/> class.
-        /// </summary>
-        public ListSeparator()
-            : base()
-        {
-         
-        }
-
         /// <summary>
         /// Gets or sets the text.
         /// </summary>
@@ -43,8 +35,8 @@ namespace Tie.Controls.Bootstrap
         /// </value>
         string IListItem.Text
         {
-            get;
-            set;
+            get { return null; }
+            set { throw new InvalidOperationException("ListSeparators do not use the Text property."); }
         }
 
         /// <summary>
@@ -55,8 +47,8 @@ namespace Tie.Controls.Bootstrap
         /// </value>
         string IListItem.NavigateUrl
         {
-            get;
-            set;
+            get { return null; }
+            set { throw new InvalidOperationException("ListSeparators do not use the NavigateUrl property."); }
         }
 
         /// <summary>
@@ -67,8 +59,8 @@ namespace Tie.Controls.Bootstrap
         /// </value>
         bool IListItem.Enabled
         {
-            get;
-            set;
+            get { return true; }
+            set { throw new InvalidOperationException("ListSeparators do not use the Enabled property."); }
         }
 
         /// <summary>
@@ -78,7 +70,7 @@ namespace Tie.Controls.Bootstrap
         public override void RenderControl(HtmlTextWriter writer)
         {
             writer.AddAttribute("role", "separator");
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "separator");
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "divider");
             writer.RenderBeginTag(HtmlTextWriterTag.Li);   
             writer.RenderEndTag();
 

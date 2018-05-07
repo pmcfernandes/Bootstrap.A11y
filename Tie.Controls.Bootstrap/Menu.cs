@@ -1,6 +1,7 @@
 ﻿// Menu.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,29 +13,30 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap menu.
+    /// </summary>
     [ToolboxData("<{0}:Menu runat=server></{0}:Menu>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.DropDownList))]
     [ParseChildren(true, "Items")]
     [PersistChildren(false)]
     public class Menu : WebControl, INamingContainer
     {
-        private ListItemCollection _items;
+        readonly ListItemCollection _items;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Menu"/> class.
         /// </summary>
-        public Menu()
-            : base()
+        public Menu() : base(HtmlTextWriterTag.Ul)
         {
             this._items = new ListItemCollection();
         }
@@ -53,43 +55,15 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Writes the <see cref="T:System.Web.UI.WebControls.BulletedList" /> control content to the specified <see cref="T:System.Web.UI.HtmlTextWriter" /> object for display on the client.
-        /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        protected override void Render(HtmlTextWriter writer)
-        {
-            base.Render(writer);
-        }
-
-        /// <summary>
         /// Notifies the server control that an element, either XML or HTML, was parsed, and adds the element to the server control's <see cref="T:System.Web.UI.ControlCollection" /> object.
         /// </summary>
         /// <param name="obj">An <see cref="T:System.Object" /> that represents the parsed element.</param>
         protected override void AddParsedSubObject(object obj)
         {
-            if (obj is ListItem || obj is ListSeparator)
+            IListItem listItem = obj as IListItem;
+            if (listItem != null)
             {
-                Items.Add((IListItem)obj);
-                return;
+                this.Items.Add(listItem);
             }
         }
 
@@ -104,11 +78,20 @@ namespace Tie.Controls.Bootstrap
                 return base.Controls;
             }
         }
+        /// <summary>
+        /// Renders the control to the specified HTML writer.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void Render(HtmlTextWriter writer)
+        {
+            this.CssClass = BuildCss();
+            base.Render(writer);
+        }
 
         /// <summary>
-        /// Renders the list items of a <see cref="T:System.Web.UI.WebControls.BulletedList" /> control as bullets into the specified <see cref="T:System.Web.UI.HtmlTextWriter" />.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
             foreach (Control item in this.Items)
@@ -123,23 +106,18 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "";
-
-            if (this.NamingContainer.GetType() == typeof(NavBar))
+            StringBuilder classes = new StringBuilder();
+            if (this.NamingContainer is NavBar)
             {
-                str += " nav navbar-nav" + (this.Parent.ID == "navbar-right" ? " navbar-right" : "");
+                classes.Append("nav navbar-nav");
+                StringHelper.AppendIf(classes, this.Parent.ID == "navbar-right", " navbar-right");
             }
             else
             {
-                str += " dropdown-menu";
+                classes.Append("dropdown-menu");
             }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }  
     }
 }

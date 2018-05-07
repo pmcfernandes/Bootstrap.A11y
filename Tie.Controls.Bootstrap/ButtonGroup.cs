@@ -1,6 +1,7 @@
 ﻿// ButtonGroup.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -15,30 +16,32 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-
+    /// <summary>
+    /// Represents a group of Bootstrap buttons.
+    /// </summary>
     [ToolboxData("<{0}:ButtonGroup runat=server></{0}:ButtonGroup>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Button))]
-    [DefaultProperty("CssClass")]
     [ParseChildren(true, "Buttons")]
     [PersistChildren(false)]
     public class ButtonGroup : WebControl, INamingContainer
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ButtonGroup"/> class.
         /// </summary>
         public ButtonGroup()
-            : base()
         {
             this.Orientation = System.Web.UI.WebControls.Orientation.Horizontal;
             this.ButtonSize = ButtonSizes.Default;
             this.Justified = false;
             this.Toolbar = false;
+            this.Label = String.Empty;
         }
 
         /// <summary>
@@ -51,8 +54,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(Orientation.Horizontal)]
         public Orientation Orientation
         {
-            get { return (Orientation)ViewState["Orientation"]; }
-            set { ViewState["Orientation"] = value; }
+            get { return (Orientation)this.ViewState["Orientation"]; }
+            set { this.ViewState["Orientation"] = value; }
         }
 
         /// <summary>
@@ -65,8 +68,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(ButtonSizes.Default)]
         public ButtonSizes ButtonSize
         {
-            get { return (ButtonSizes)ViewState["ButtonSize"]; }
-            set { ViewState["ButtonSize"] = value; }
+            get { return (ButtonSizes)this.ViewState["ButtonSize"]; }
+            set { this.ViewState["ButtonSize"] = value; }
         }
 
         /// <summary>
@@ -79,8 +82,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Justified
         {
-            get { return (bool)ViewState["Justified"]; }
-            set { ViewState["Justified"] = value; }
+            get { return (bool)this.ViewState["Justified"]; }
+            set { this.ViewState["Justified"] = value; }
         }
 
         /// <summary>
@@ -93,8 +96,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Toolbar
         {
-            get { return (bool)ViewState["Toolbar"]; }
-            set { ViewState["Toolbar"] = value; }
+            get { return (bool)this.ViewState["Toolbar"]; }
+            set { this.ViewState["Toolbar"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a label to describe the button group to screen readers.
+        /// </summary>
+        /// <value>
+        /// The label text.
+        /// </value>
+        [Category("Accessibility")]
+        [DefaultValue("")]
+        public string Label
+        {
+            get { return (string)this.ViewState["Label"]; }
+            set { this.ViewState["Label"] = value; }
         }
 
         /// <summary>
@@ -113,24 +130,6 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
@@ -140,7 +139,7 @@ namespace Tie.Controls.Bootstrap
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
 
-            if (this.Toolbar == true)
+            if (this.Toolbar)
             {
                 writer.AddAttribute("role", "toolbar");
             }
@@ -149,27 +148,30 @@ namespace Tie.Controls.Bootstrap
                 writer.AddAttribute("role", "group");
             }
 
+            if (!String.IsNullOrEmpty(Label))
+            {
+                writer.AddAttribute("aria-label", Label);
+            }
 
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -192,25 +194,20 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = (this.Toolbar ? "btn-toolbar" : "btn-group");
-            str += " " + this.GetCssButtonSize();
-
-            if (this.Justified == true)
+            StringBuilder classes = new StringBuilder();
+            if(this.Toolbar)
             {
-                str += " btn-group-justified";
+                classes.Append("btn-toolbar");
             }
-
-            if (this.Orientation == System.Web.UI.WebControls.Orientation.Vertical)
+            else
             {
-                str += " btn-group-vertical";
+                classes.Append("btn-group");
+                StringHelper.AppendIf(classes, this.Orientation == Orientation.Vertical, "-vertical");
             }
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            classes.Append(this.GetCssButtonSize());
+            StringHelper.AppendIf(classes, this.Justified, " btn-group-justified");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
         /// <summary>
@@ -219,27 +216,21 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string GetCssButtonSize()
         {
-            string str = "";
-
             switch (this.ButtonSize)
             {
                 case ButtonSizes.Large:
-                    str += "btn-group-lg";
-                    break;
+                    return " btn-group-lg";
 
                 case ButtonSizes.Small:
-                    str += "btn-group-sm";
-                    break;
+                    return " btn-group-sm";
 
                 case ButtonSizes.Mini:
-                    str += "btn-group-xs";
-                    break;
+                    return " btn-group-xs";
 
                 default:
-                    break;
+                    // no class needed
+                    return String.Empty;
             }
-
-            return str;
         }
     }
 }

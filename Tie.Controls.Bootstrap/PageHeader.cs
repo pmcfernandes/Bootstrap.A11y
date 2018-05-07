@@ -1,6 +1,7 @@
 ﻿// PageHeader.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,21 +18,17 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a Bootstrap page header.
+    /// </summary>
     [ToolboxData("<{0}:PageHeader runat=server />")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Label))]
     public class PageHeader : WebControl, INamingContainer
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PageHeader"/> class.
-        /// </summary>
-        public PageHeader()
-            : base()
-        {
-        }
-
         /// <summary>
         /// Gets or sets the title.
         /// </summary>
@@ -42,8 +39,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Title
         {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
+            get { return (string)this.ViewState["Title"]; }
+            set { this.ViewState["Title"] = value; }
         }
 
         /// <summary>
@@ -56,26 +53,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string SubText
         {
-            get { return (string)ViewState["SubText"]; }
-            set { ViewState["SubText"] = value; }
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
+            get { return (string)this.ViewState["SubText"]; }
+            set { this.ViewState["SubText"] = value; }
         }
 
         /// <summary>
@@ -92,35 +71,28 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            output.RenderBeginTag(HtmlTextWriterTag.H1);
-            output.Write(this.Title);
+            writer.RenderBeginTag(HtmlTextWriterTag.H1);
+            writer.Write(this.Title);
           
             if (!String.IsNullOrEmpty(this.SubText))
             {
-                output.RenderBeginTag(HtmlTextWriterTag.Small);
-                output.Write(this.SubText);
-                output.RenderEndTag();
+                writer.RenderBeginTag(HtmlTextWriterTag.Small);
+                writer.Write(this.SubText);
+                writer.RenderEndTag();
             }
 
-            output.RenderEndTag();
-            this.RenderChildren(output);
+            writer.RenderEndTag();
+            this.RenderChildren(writer);
         }
 
         private string BuildCss()
         {
-            string str = "page-header";
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();      
+            return StringHelper.AppendWithSpaceIfNotEmpty("page-header", this.CssClass);
         }
     }
 }

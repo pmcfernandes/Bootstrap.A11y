@@ -1,6 +1,7 @@
 ﻿// ProgressBar.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -14,33 +15,61 @@
 
 using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Contextual styles used on Bootstrap progress bars.
+    /// </summary>
     public enum ProgressBarStyles
     {
-        Info = 0,
-        Success = 1,
-        Warning = 2,
-        Danger = 3
+        /// <summary>Primary brand color</summary>
+        Default = 0,
+        /// <summary>Indicates informational messages (usually light-blue)</summary>
+        Info = 1,
+        /// <summary>Indicates a successful or positive action (usually green)</summary>
+        Success = 2,
+        /// <summary>Indicates caution should be taken with this action (usually yellow-orange)</summary>
+        Warning = 3,
+        /// <summary>Indicates a dangerous or potentially negative action (usually red)</summary>
+        Danger = 4
     }
 
-    [ToolboxData("<{0}:ProgressBar runat=server />")]
+    /// <summary>
+    /// Represents a Bootstrap progress bar.
+    /// </summary>
+    [ToolboxData("<{0}:ProgressBar runat=\"server\" />")]
     public class ProgressBar : WebControl, INamingContainer
     {
+        #region constants
+
+        const ProgressBarStyles DEFAULT_STYLE = ProgressBarStyles.Default;
+        const string DEFAULT_LABEL_FORMAT = "{0:F0}%";
+        const string DEFAULT_CAPTION_FORMAT = "{0:F0}% Complete";
+        const string DEFAULT_LABEL_MIN_WIDTH = "2em";
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ProgressBar" /> class.
         /// </summary>
         public ProgressBar()
-            : base()
         {
             this.Animated = false;
             this.Striped = false;
             this.ShowLabel = false;
             this.Value = 50;
-            this.ProgressBarStyle = ProgressBarStyles.Info;
+            this.MinValue = 0;
+            this.MaxValue = 100;
+            this.ProgressBarStyle = DEFAULT_STYLE;
+            this.LabelMinWidth = DEFAULT_LABEL_MIN_WIDTH;
+            this.LabelFormat = DEFAULT_LABEL_FORMAT;
+            this.CaptionFormat = DEFAULT_CAPTION_FORMAT;
         }
 
         /// <summary>
@@ -50,10 +79,54 @@ namespace Tie.Controls.Bootstrap
         /// The value.
         /// </value>
         [Category("Behavior")]
-        public int Value
+        public decimal Value
         {
-            get { return (int)ViewState["Value"]; }
-            set { ViewState["Value"] = value; }
+            get { return (decimal)this.ViewState["Value"]; }
+            set { this.ViewState["Value"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
+        [Category("Behavior")]
+        [DefaultValue(0)]
+        public decimal MinValue
+        {
+            get { return (decimal)this.ViewState["MinValue"]; }
+            set { this.ViewState["MinValue"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
+        [Category("Behavior")]
+        [DefaultValue(100)]
+        public decimal MaxValue
+        {
+            get { return (decimal)this.ViewState["MaxValue"]; }
+            set { this.ViewState["MaxValue"] = value; }
+        }
+        
+        /// <summary>
+        /// Computes the percentage (from 0-100) that <see name="Value"/> represents between <see name="MinValue"/> and <see name="MinValue"/>.
+        /// </summary>
+        private decimal Percentage
+        {
+            get { return (Value - MinValue) / (MaxValue - MinValue) * 100M; }
+        }
+
+        /// <summary>
+        /// Determines whether this <see cref="ProgressBar" /> is the child of a <see cref="StackedProgressBars" /> control.
+        /// </summary>
+        private bool IsStacked
+        {
+            get { return this.Parent is StackedProgressBars; }
         }
 
         /// <summary>
@@ -63,11 +136,11 @@ namespace Tie.Controls.Bootstrap
         /// The progress bar style.
         /// </value>
         [Category("Appearance")]
-        [DefaultValue(ProgressBarStyles.Info)]
+        [DefaultValue(DEFAULT_STYLE)]
         public ProgressBarStyles ProgressBarStyle
         {
-            get { return (ProgressBarStyles)ViewState["ProgressBarStyle"]; }
-            set { ViewState["ProgressBarStyle"] = value; }
+            get { return (ProgressBarStyles)this.ViewState["ProgressBarStyle"]; }
+            set { this.ViewState["ProgressBarStyle"] = value; }
         }
 
         /// <summary>
@@ -80,8 +153,58 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool ShowLabel
         {
-            get { return (bool)ViewState["ShowLabel"]; }
-            set { ViewState["ShowLabel"] = value; }
+            get { return (bool)this.ViewState["ShowLabel"]; }
+            set { this.ViewState["ShowLabel"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum width of the label div when <see name="ShowLabel"/> is <c>true</c>.
+        /// </summary>
+        /// <value>
+        /// A string containing a valid CSS unit (e.g. "2em", "5%").
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(DEFAULT_LABEL_MIN_WIDTH)]
+        public string LabelMinWidth
+        {
+            get { return (string)this.ViewState["LabelMinWidth"]; }
+            set { this.ViewState["LabelMinWidth"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the format string for label text for sighted users if <see name="ShowLabel"/> is <c>true</c>.
+        /// </summary>
+        /// <value>
+        /// Format string with the following arguments:
+        /// {0} is Percentage, 
+        /// {1} is Value,
+        /// {2} is MaxValue,
+        /// {3} is MinValue
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(DEFAULT_LABEL_FORMAT)]
+        public string LabelFormat
+        {
+            get { return (string)this.ViewState["LabelFormat"]; }
+            set { this.ViewState["LabelFormat"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the format string for screen reader caption.
+        /// </summary>
+        /// <value>
+        /// Format string with the following arguments:
+        /// {0} is <see name="Percentage"/>, 
+        /// {1} is <see name="Value"/>,
+        /// {2} is <see name="MaxValue"/>,
+        /// {3} is <see name="MinValue"/>
+        /// </value>
+        [Category("Appearance")]
+        [DefaultValue(DEFAULT_CAPTION_FORMAT)]
+        public string CaptionFormat
+        {
+            get { return (string)this.ViewState["CaptionFormat"]; }
+            set { this.ViewState["CaptionFormat"] = value; }
         }
 
         /// <summary>
@@ -94,8 +217,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Animated
         {
-            get { return (bool)ViewState["Animated"]; }
-            set { ViewState["Animated"] = value; }
+            get { return (bool)this.ViewState["Animated"]; }
+            set { this.ViewState["Animated"] = value; }
         }
 
         /// <summary>
@@ -108,17 +231,20 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Striped
         {
-            get { return (bool)ViewState["Striped"]; }
-            set { ViewState["Striped"] = value; }
+            get { return (bool)this.ViewState["Striped"]; }
+            set { this.ViewState["Striped"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
         {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            if (!IsStacked)
+            {
+                writer.RenderBeginTag(HtmlTextWriterTag.Div);
+            }
         }
 
         /// <summary>
@@ -129,46 +255,73 @@ namespace Tie.Controls.Bootstrap
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            if (!IsStacked)
+            {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            }
 
             base.Render(writer);
         }
 
         /// <summary>
-        /// Renders the contents of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the contents of the control to the specified <paramref name="writer"/>. This method is used primarily by control developers.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
-            Unit uValue = Unit.Parse(this.Value + "%");
-
             writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildInternalCss());
-            writer.AddStyleAttribute(HtmlTextWriterStyle.Width, uValue.ToString());
-            writer.AddAttribute("role", "progressbar");            
+            // add style markup
+            writer.AddStyleAttribute(HtmlTextWriterStyle.Width, Percentage.ToString(CultureInfo.InvariantCulture) + "%");
+            if (this.ShowLabel && !String.IsNullOrEmpty(LabelMinWidth))
+            {
+                writer.AddStyleAttribute("min-width", LabelMinWidth);
+            }
+            // add ARIA markup
+            writer.AddAttribute("role", "progressbar");
+            writer.AddAttribute("aria-valuenow", Value.ToString(CultureInfo.InvariantCulture));
+            writer.AddAttribute("aria-valuemin", MinValue.ToString(CultureInfo.InvariantCulture));
+            writer.AddAttribute("aria-valuemax", MaxValue.ToString(CultureInfo.InvariantCulture));
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
-            if (this.ShowLabel == false)
+            // output label
+            if (ShowLabel)
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
-                writer.RenderBeginTag(HtmlTextWriterTag.Span);
-                writer.Write(uValue.ToString());
-                writer.RenderEndTag();
+                // if label and caption are the same, the same text can be used for sighted and screen readers
+                if (LabelFormat == CaptionFormat)
+                {
+                    writer.Write(DoFormat(LabelFormat));
+                }
+                // otherwise output different versions for display versus screen reading
+                else
+                {
+                    // output span for sighted users
+                    writer.AddAttribute("aria-hidden", "true");
+                    writer.RenderBeginTag(HtmlTextWriterTag.Span);
+                    writer.Write(DoFormat(LabelFormat));
+                    writer.RenderEndTag();
+                    // output screen reader caption
+                    WriteScreenReaderSpan(writer);
+                }
             }
+            // output screen reader caption
             else
             {
-                writer.Write(uValue.ToString());
+                WriteScreenReaderSpan(writer);
             }
 
             writer.RenderEndTag();
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderEndTag(HtmlTextWriter writer)
         {
-            writer.RenderEndTag();
+            if (!IsStacked)
+            {
+                writer.RenderEndTag();
+            }
         }
 
         /// <summary>
@@ -177,21 +330,11 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildInternalCss()
         {
-            string str = "progress-bar";
-
-            str += " " + this.GetProgressBarStyles();
-
-            if (this.Striped == true)
-            {
-                str += " progress-bar-striped";
-
-                if (this.Animated == true)
-                {
-                    str += " active";
-                }
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("progress-bar");
+            classes.Append(this.GetContextStyles());
+            StringHelper.AppendIf(classes, this.Striped, " progress-bar-striped");
+            StringHelper.AppendIf(classes, this.Animated, " active");
+            return classes.ToString();
         }
 
         /// <summary>
@@ -200,48 +343,68 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "progress";
-           
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder();
+            StringHelper.AppendIf(classes, !IsStacked, "progress");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString().Trim();
         }
 
         /// <summary>
         /// Gets the progress bar styles.
         /// </summary>
         /// <returns></returns>
-        private string GetProgressBarStyles()
+        private string GetContextStyles()
         {
-            string str = "";
-
             switch (this.ProgressBarStyle)
             {
                 case ProgressBarStyles.Success:
-                    str = "progress-bar-success";
-                    break;
+                    return " progress-bar-success";
 
                 case ProgressBarStyles.Warning:
-                    str = "progress-bar-warning";
-                    break;
+                    return " progress-bar-warning";
 
                 case ProgressBarStyles.Danger:
-                    str = "progress-bar-danger";
-                    break;
+                    return " progress-bar-danger";
 
                 case ProgressBarStyles.Info:
-                    str = "progress-bar-info";
-                    break;
+                    return " progress-bar-info";
 
                 default:
-                    str = "";
-                    break;
+                    return String.Empty;
             }
-
-            return str.Trim();
         }
+
+        /// <summary>
+        /// Calls String.Format on <paramref name="format"/> with the following parameters: 
+        /// {0} is Percentage, 
+        /// {1} is Value,
+        /// {2} is MaxValue,
+        /// {3} is MinValue
+        /// </summary>
+        /// <param name="format">
+        /// Format string.
+        /// </param>
+        /// <returns>
+        /// Formatted string.
+        /// </returns>
+        private string DoFormat(string format)
+        {
+            return String.Format(format, Percentage, Value, MaxValue, MinValue);
+        }
+
+        /// <summary>
+        /// Renders a span classed "sr-only" containing the caption text.
+        /// </summary>
+        /// <param name="writer">
+        /// A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.
+        /// </param>
+        private void WriteScreenReaderSpan(HtmlTextWriter writer)
+        {
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, "sr-only");
+            writer.RenderBeginTag(HtmlTextWriterTag.Span);
+            writer.Write(DoFormat(CaptionFormat));
+            writer.RenderEndTag();
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 // TabCollection.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -17,17 +18,21 @@ using System.Web.UI;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a collection of Bootstrap <see cref="TabPage"/>s.
+    /// </summary>
     public class TabCollection : CollectionBase
     {
-       
-        protected Control Parent = null;
+        /// <summary>
+        /// The parent control.
+        /// </summary>
+        protected Control Parent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TabCollection" /> class.
         /// </summary>
-        /// <param name="parent">The parent.</param>
+        /// <param name="parent">The parent control.</param>
         public TabCollection(Control parent)
-            : base()
         {
             Parent = parent;
         }
@@ -73,25 +78,25 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Determines whether [contains] [the specified tab].
+        /// Determines whether the collection contains the specified tab.
         /// </summary>
-        /// <param name="Tab">The tab.</param>
+        /// <param name="tab">The tab.</param>
         /// <returns>
-        ///   <c>true</c> if [contains] [the specified tab]; otherwise, <c>false</c>.
+        ///   <c>true</c> if contains the specified tab; otherwise, <c>false</c>.
         /// </returns>
-        public bool Contains(TabPage Tab)
+        public bool Contains(TabPage tab)
         {
-            return List.Contains(Tab);
+            return List.Contains(tab);
         }
 
         /// <summary>
-        /// Indexes the of.
+        /// Gets the index of a given tab. Returns -1 if the item isn't in the list.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns></returns>
-        public int IndexOf(TabPage item)
+        /// <param name="tab">The tab.</param>
+        /// <returns>The index of the tab in the list, or -1 if the item isn't in the list.</returns>
+        public int IndexOf(TabPage tab)
         {
-            return List.IndexOf(item);
+            return List.IndexOf(tab);
         }
 
         /// <summary>

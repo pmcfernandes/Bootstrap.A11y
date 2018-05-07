@@ -1,6 +1,7 @@
 ﻿// Column.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -12,8 +13,6 @@
 // General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
@@ -22,6 +21,9 @@ using System.Web.UI.WebControls;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Represents a column in the Bootstrap grid system.
+    /// </summary>
     [ToolboxData("<{0}:Column runat=server></{0}:Column>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [DefaultProperty("CssClass")]
@@ -29,19 +31,6 @@ namespace Tie.Controls.Bootstrap
     [PersistChildren(false)]
     public class Column : WebControl, INamingContainer
     {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Container"/> class.
-        /// </summary>
-        public Column()
-            : base()
-        {
-            this.ExtraSmall = 12;
-            this.Small = 12;
-            this.Medium = 12;
-            this.Large = 12;
-        }
-
         /// <summary>
         /// Gets or sets the extra small.
         /// </summary>
@@ -49,11 +38,11 @@ namespace Tie.Controls.Bootstrap
         /// The extra small.
         /// </value>
         [Category("Size")]
-        [DefaultValue(12)]
-        public int ExtraSmall
+        [DefaultValue(null)]
+        public int? ExtraSmall
         {
-            get { return (int)ViewState["ExtraSmall"]; }
-            set { ViewState["ExtraSmall"] = value; }
+            get { return (int?)this.ViewState["ExtraSmall"]; }
+            set { this.ViewState["ExtraSmall"] = value; }
         }
 
         /// <summary>
@@ -63,11 +52,11 @@ namespace Tie.Controls.Bootstrap
         /// The small.
         /// </value>
         [Category("Size")]
-        [DefaultValue(12)]
-        public int Small
+        [DefaultValue(null)]
+        public int? Small
         {
-            get { return (int)ViewState["Small"]; }
-            set { ViewState["Small"] = value; }
+            get { return (int?)this.ViewState["Small"]; }
+            set { this.ViewState["Small"] = value; }
         }
 
         /// <summary>
@@ -77,11 +66,11 @@ namespace Tie.Controls.Bootstrap
         /// The medium.
         /// </value>
         [Category("Size")]
-        [DefaultValue(12)]
-        public int Medium
+        [DefaultValue(null)]
+        public int? Medium
         {
-            get { return (int)ViewState["Medium"]; }
-            set { ViewState["Medium"] = value; }
+            get { return (int?)this.ViewState["Medium"]; }
+            set { this.ViewState["Medium"] = value; }
         }
 
         /// <summary>
@@ -91,11 +80,179 @@ namespace Tie.Controls.Bootstrap
         /// The large.
         /// </value>
         [Category("Size")]
-        [DefaultValue(12)]
-        public int Large
+        [DefaultValue(null)]
+        public int? Large
         {
-            get { return (int)ViewState["Large"]; }
-            set { ViewState["Large"] = value; }
+            get { return (int?)this.ViewState["Large"]; }
+            set { this.ViewState["Large"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the extra small offset.
+        /// </summary>
+        /// <value>
+        /// The extra small offset.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? ExtraSmallOffset
+        {
+            get { return (int?)this.ViewState["ExtraSmallOffset"]; }
+            set { this.ViewState["ExtraSmallOffset"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the small offset.
+        /// </summary>
+        /// <value>
+        /// The small offset.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? SmallOffset
+        {
+            get { return (int?)this.ViewState["SmallOffset"]; }
+            set { this.ViewState["SmallOffset"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the medium offset.
+        /// </summary>
+        /// <value>
+        /// The medium offset.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? MediumOffset
+        {
+            get { return (int?)this.ViewState["MediumOffset"]; }
+            set { this.ViewState["MediumOffset"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the large offset.
+        /// </summary>
+        /// <value>
+        /// The large offset.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? LargeOffset
+        {
+            get { return (int?)this.ViewState["LargeOffset"]; }
+            set { this.ViewState["LargeOffset"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the extra small push.
+        /// </summary>
+        /// <value>
+        /// The extra small push.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? ExtraSmallPush
+        {
+            get { return (int?)this.ViewState["ExtraSmallPush"]; }
+            set { this.ViewState["ExtraSmallPush"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the small push.
+        /// </summary>
+        /// <value>
+        /// The small push.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? SmallPush
+        {
+            get { return (int?)this.ViewState["SmallPush"]; }
+            set { this.ViewState["SmallPush"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the medium push.
+        /// </summary>
+        /// <value>
+        /// The medium push.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? MediumPush
+        {
+            get { return (int?)this.ViewState["MediumPush"]; }
+            set { this.ViewState["MediumPush"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the large push.
+        /// </summary>
+        /// <value>
+        /// The large push.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? LargePush
+        {
+            get { return (int?)this.ViewState["LargePush"]; }
+            set { this.ViewState["LargePush"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the extra small pull.
+        /// </summary>
+        /// <value>
+        /// The extra small pull.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? ExtraSmallPull
+        {
+            get { return (int?)this.ViewState["ExtraSmallPull"]; }
+            set { this.ViewState["ExtraSmallPull"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the small pull.
+        /// </summary>
+        /// <value>
+        /// The small pull.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? SmallPull
+        {
+            get { return (int?)this.ViewState["SmallPull"]; }
+            set { this.ViewState["SmallPull"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the medium pull.
+        /// </summary>
+        /// <value>
+        /// The medium pull.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? MediumPull
+        {
+            get { return (int?)this.ViewState["MediumPull"]; }
+            set { this.ViewState["MediumPull"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the large pull.
+        /// </summary>
+        /// <value>
+        /// The large pull.
+        /// </value>
+        [Category("Size")]
+        [DefaultValue(null)]
+        public int? LargePull
+        {
+            get { return (int?)this.ViewState["LargePull"]; }
+            set { this.ViewState["LargePull"] = value; }
         }
 
         /// <summary>
@@ -111,24 +268,6 @@ namespace Tie.Controls.Bootstrap
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
         }
 
         /// <summary>
@@ -149,16 +288,16 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the contents.
+        /// Renders the HTML contents of the control into the specified <paramref name="writer"/>.
         /// </summary>
-        /// <param name="output">The output.</param>
-        protected override void RenderContents(HtmlTextWriter output)
+        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        protected override void RenderContents(HtmlTextWriter writer)
         {
-            this.RenderChildren(output);
+            this.RenderChildren(writer);
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
@@ -186,19 +325,37 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "";
+            StringBuilder classes = new StringBuilder(this.CssClass);
 
-            str += " col-xs-" + this.ExtraSmall;
-            str += " col-sm-" + this.Small;
-            str += " col-md-" + this.Medium;
-            str += " col-lg-" + this.Large;
+            AppendClassIfHasValue(classes, " col-xs-{0}", this.ExtraSmall);
+            AppendClassIfHasValue(classes, " col-sm-{0}", this.Small);
+            AppendClassIfHasValue(classes, " col-md-{0}", this.Medium);
+            AppendClassIfHasValue(classes, " col-lg-{0}", this.Large);
 
-            if (!String.IsNullOrEmpty(this.CssClass))
+            AppendClassIfHasValue(classes, " col-xs-offset-{0}", this.ExtraSmallOffset);
+            AppendClassIfHasValue(classes, " col-sm-offset-{0}", this.SmallOffset);
+            AppendClassIfHasValue(classes, " col-md-offset-{0}", this.MediumOffset);
+            AppendClassIfHasValue(classes, " col-lg-offset-{0}", this.LargeOffset);
+
+            AppendClassIfHasValue(classes, " col-xs-push-{0}", this.ExtraSmallPush);
+            AppendClassIfHasValue(classes, " col-sm-push-{0}", this.SmallPush);
+            AppendClassIfHasValue(classes, " col-md-push-{0}", this.MediumPush);
+            AppendClassIfHasValue(classes, " col-lg-push-{0}", this.LargePush);
+
+            AppendClassIfHasValue(classes, " col-xs-pull-{0}", this.ExtraSmallPull);
+            AppendClassIfHasValue(classes, " col-sm-pull-{0}", this.SmallPull);
+            AppendClassIfHasValue(classes, " col-md-pull-{0}", this.MediumPull);
+            AppendClassIfHasValue(classes, " col-lg-pull-{0}", this.LargePull);
+
+            return classes.ToString().Trim();
+        }
+
+        private static void AppendClassIfHasValue(StringBuilder classes, string classFormat, int? val)
+        {
+            if (val.HasValue)
             {
-                str += " " + this.CssClass;
+                classes.AppendFormat(classFormat, val.Value);
             }
-
-            return str.Trim();
         }
     }
 }

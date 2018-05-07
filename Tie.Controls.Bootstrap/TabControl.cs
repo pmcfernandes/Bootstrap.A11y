@@ -1,6 +1,7 @@
 ﻿// TabControl.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -15,12 +16,15 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
-
+    /// <summary>
+    /// Occurs when the selected tab page index has changed.
+    /// </summary>
     public class TabPageChangedEventArgs : EventArgs
     {
         /// <summary>
@@ -35,21 +39,26 @@ namespace Tie.Controls.Bootstrap
             set;
         }
     }
-    
+
+    /// <summary>
+    /// Represents a series of Bootstrap tabs.
+    /// </summary>
     [ToolboxData("<{0}:TabControl runat=server></{0}:TabControl>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Image))]
     [ParseChildren(true, "TabPages")]
     [PersistChildren(false)]
-    public class TabControl : WebControl, INamingContainer, IPostBackDataHandler
+    public class TabControl : AccessibleWebControl, INamingContainer, IPostBackDataHandler
     {
+        /// <summary>
+        /// Occurs when the <see cref="ActiveTabPage"/> property has changed.
+        /// </summary>
         public event EventHandler<TabPageChangedEventArgs> TabPageChanged;
-        private TabCollection _Tabs;
+        readonly TabCollection _Tabs;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="TabControl" /> class.
         /// </summary>
         public TabControl()
-            : base()
         {
             _Tabs = new TabCollection(this);
             this.ActiveTabPage = 0;
@@ -83,22 +92,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(true)]
         public int ActiveTabPage
         {
-            get { return (int)ViewState["ActiveTabPage"]; }
-            set { ViewState["ActiveTabPage"] = value; }
+            get { return (int)this.ViewState["ActiveTabPage"]; }
+            set { this.ViewState["ActiveTabPage"] = value; }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="TabControl"/> is pills.
+        /// Gets or sets a value indicating whether this <see cref="TabControl"/> is rendered as pills.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if pills; otherwise, <c>false</c>.
+        ///   <c>true</c> if rendered as pills; otherwise, <c>false</c>.
         /// </value>
         [Category("Appearance")]
         [DefaultValue(true)]
         public bool Pills
         {
-            get { return (bool)ViewState["Pills"]; }
-            set { ViewState["Pills"] = value; }
+            get { return (bool)this.ViewState["Pills"]; }
+            set { this.ViewState["Pills"] = value; }
         }
 
         /// <summary>
@@ -111,8 +120,8 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Stacked
         {
-            get { return (bool)ViewState["Stacked"]; }
-            set { ViewState["Stacked"] = value; }
+            get { return (bool)this.ViewState["Stacked"]; }
+            set { this.ViewState["Stacked"] = value; }
         }
 
         /// <summary>
@@ -125,41 +134,30 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(false)]
         public bool Justified
         {
-            get { return (bool)ViewState["Justified"]; }
-            set { ViewState["Justified"] = value; }
+            get { return (bool)this.ViewState["Justified"]; }
+            set { this.ViewState["Justified"] = value; }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [automatic post back].
+        /// Gets or sets a value indicating whether a postback to the server automatically occurs when the user changes the list selection.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [automatic post back]; otherwise, <c>false</c>.
+        /// <c>true</c> if a postback to the server automatically occurs whenever the user changes the selection of the list; otherwise, <c>false</c>. The default is <c>false</c>.
         /// </value>
         [Category("Behavior")]
         [DefaultValue(false)]
         public bool AutoPostBack
         {
-            get { return (bool)ViewState["AutoPostBack"]; }
-            set { ViewState["AutoPostBack"] = value; }
+            get { return (bool)this.ViewState["AutoPostBack"]; }
+            set { this.ViewState["AutoPostBack"] = value; }
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
-        }
-
-        /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
+        /// Renders the HTML end tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderEndTag(HtmlTextWriter writer)
         {
-            writer.RenderEndTag();
-
             writer.AddAttribute(HtmlTextWriterAttribute.Class, "tab-content");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
@@ -167,15 +165,10 @@ namespace Tie.Controls.Bootstrap
             {
                 TabPage tabPage = this.TabPages[i];
 
-                string strCssClass = "tab-pane fade ";
-
-                if (this.ActiveTabPage == i)
-                {
-                    strCssClass += "in active";
-                }
-
+                string cssClass = StringHelper.AppendIf("tab-pane fade", this.ActiveTabPage == i, " in active");
                 writer.AddAttribute(HtmlTextWriterAttribute.Id, tabPage.GetTabName());
-                writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass.Trim());
+                writer.AddAttribute("aria-labelledby", tabPage.GetTabName() + "-label");
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, cssClass);
                 writer.AddAttribute("role", "tabpanel");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
 
@@ -188,6 +181,7 @@ namespace Tie.Controls.Bootstrap
             }
 
             writer.RenderEndTag();
+            writer.RenderEndTag();
         }
 
         /// <summary>
@@ -198,38 +192,32 @@ namespace Tie.Controls.Bootstrap
         {
             writer.AddAttribute(HtmlTextWriterAttribute.Id, this.ClientID);
             writer.AddAttribute(HtmlTextWriterAttribute.Name, this.UniqueID);
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
-            writer.AddAttribute("role", "tablist");
 
             base.Render(writer);           
         }
 
         /// <summary>
-        /// Renders the list items of a <see cref="T:System.Web.UI.WebControls.BulletedList" /> control as bullets into the specified <see cref="T:System.Web.UI.HtmlTextWriter" />.
+        /// Renders the control to the specified HTML writer.
         /// </summary>
-        /// <param name="writer">An <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
+        /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
         protected override void RenderContents(HtmlTextWriter writer)
         {
+            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.BuildCss());
+            writer.AddAttribute("role", "tablist");
+            writer.RenderBeginTag(HtmlTextWriterTag.Ul);
+
             for (int i = 0; i < this.TabPages.Count; i++)
             {
                 TabPage tabPage = this.TabPages[i];
                 tabPage.Index = i;
 
-                string strCssClass = "";
+                StringBuilder classes = new StringBuilder();
+                StringHelper.AppendIf(classes, this.ActiveTabPage == i, " active");
+                StringHelper.AppendIf(classes, !tabPage.Enabled, " disabled");
 
-                if (this.ActiveTabPage == i)
+                if (classes.Length > 0)
                 {
-                    strCssClass += " active";
-                }
-
-                if (tabPage.Enabled == false)
-                {
-                    strCssClass += " disabled";
-                }
-
-                if (!String.IsNullOrEmpty(strCssClass))
-                {
-                    writer.AddAttribute(HtmlTextWriterAttribute.Class, strCssClass.Trim());
+                    writer.AddAttribute(HtmlTextWriterAttribute.Class, classes.ToString());
                 }
 
                 writer.AddAttribute("role", "presentation");
@@ -238,6 +226,7 @@ namespace Tie.Controls.Bootstrap
 
                 writer.RenderEndTag();
             }
+            writer.RenderEndTag();
         }
 
         /// <summary>
@@ -261,21 +250,16 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "nav";
-            str += " " + (this.Pills ? "nav-pills" : "nav-tabs");
-            str += " " + (this.Stacked ? " nav-stacked" : "");
-            str += " " + (this.Justified ? " nav-justified" : "");
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("nav");
+            classes.Append(this.Pills ? " nav-pills" : " nav-tabs");
+            StringHelper.AppendIf(classes, this.Stacked, " nav-stacked");
+            StringHelper.AppendIf(classes, this.Justified, " nav-justified");
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
         /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(EventArgs e)
@@ -284,7 +268,6 @@ namespace Tie.Controls.Bootstrap
             {
                 this.Page.RegisterRequiresPostBack(this);
             }
-
             base.OnInit(e);
             this.CreateChildControls();
             this.ChildControlsCreated = true;
@@ -302,14 +285,14 @@ namespace Tie.Controls.Bootstrap
         {
             if (this.AutoPostBack)
             {
-                if (!(postCollection["__EVENTTARGET"] == this.UniqueID))
+                if (postCollection["__EVENTTARGET"] != this.UniqueID)
                 {
                     return false;
                 }
 
                 int tabPageIndex = Convert.ToInt32(postCollection["__EVENTARGUMENT"]);
 
-                if (!(this.ActiveTabPage == tabPageIndex))
+                if (this.ActiveTabPage != tabPageIndex)
                 {
                     this.ActiveTabPage = tabPageIndex;
                     return true;
@@ -334,7 +317,7 @@ namespace Tie.Controls.Bootstrap
         {
             if (TabPageChanged != null)
             {
-                TabPageChanged(this, new TabPageChangedEventArgs() { Index = this.ActiveTabPage });
+                TabPageChanged(this, new TabPageChangedEventArgs { Index = this.ActiveTabPage });
             }
         }
 

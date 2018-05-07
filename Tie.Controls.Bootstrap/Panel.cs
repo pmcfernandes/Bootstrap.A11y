@@ -1,6 +1,7 @@
 ﻿// Panel.cs
 
 // Copyright (C) 2013 Pedro Fernandes
+// Accessibility and other updates (C) 2018 Kinsey Roberts (@kinzdesign), Weatherhead School of Management (@wsomweb)
 
 // This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
 // General Public License as published by the Free Software Foundation; either version 2 of the 
@@ -13,24 +14,37 @@
 // Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using Tie.Controls.Bootstrap.Helpers;
 
 namespace Tie.Controls.Bootstrap
 {
+    /// <summary>
+    /// Contextual styles used on Bootstrap panels and accordions.
+    /// </summary>
     public enum PanelTypes
     {
+        /// <summary>Default style (usually gray)</summary>
         Default = 0,
+        /// <summary>Primary brand color</summary>
         Primary = 1,
+        /// <summary>Indicates a successful or positive action (usually green)</summary>
         Success = 2,
+        /// <summary>Indicates informational messages (usually light-blue)</summary>
         Info = 3,
+        /// <summary>Indicates caution should be taken with this action (usually yellow-orange)</summary>
         Warning = 4,
+        /// <summary>Indicates a dangerous or potentially negative action (usually red)</summary>
         Danger = 5
     }
 
+    /// <summary>
+    /// Represents a Bootstrap panel.
+    /// </summary>
     [ToolboxData("<{0}:Panel runat=server></{0}:Panel>")]
     [ToolboxBitmap(typeof(System.Web.UI.WebControls.Panel))]
     [ParseChildren(true, "Content")]
@@ -41,9 +55,9 @@ namespace Tie.Controls.Bootstrap
         /// Initializes a new instance of the <see cref="Panel"/> class.
         /// </summary>
         public Panel()
-            : base()
         {
             this.Title = "";
+            this.TitleTag = HtmlTextWriterTag.Unknown;
             this.PanelType = PanelTypes.Default;
         }
 
@@ -57,8 +71,22 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue("")]
         public string Title
         {
-            get { return (string)ViewState["Title"]; }
-            set { ViewState["Title"] = value; }
+            get { return (string)this.ViewState["Title"]; }
+            set { this.ViewState["Title"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the tag type (typically a header like h3) to wrap around the title.
+        /// </summary>
+        /// <value>
+        /// The title.
+        /// </value>
+        [Category("Behavior")]
+        [DefaultValue(HtmlTextWriterTag.Unknown)]
+        public HtmlTextWriterTag TitleTag
+        {
+            get { return (HtmlTextWriterTag)this.ViewState["TitleTag"]; }
+            set { this.ViewState["TitleTag"] = value; }
         }
 
         /// <summary>
@@ -71,20 +99,48 @@ namespace Tie.Controls.Bootstrap
         [DefaultValue(PanelTypes.Default)]
         public PanelTypes PanelType
         {
-            get { return (PanelTypes)ViewState["PanelType"]; }
-            set { ViewState["PanelType"] = value; }
+            get { return (PanelTypes)this.ViewState["PanelType"]; }
+            set { this.ViewState["PanelType"] = value; }
         }
 
         /// <summary>
-        /// Gets or sets the footer.
+        /// Gets or sets the contents.
         /// </summary>
         /// <value>
-        /// The footer.
+        /// The contents.
         /// </value>
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [TemplateContainer(typeof(Panel))]
         [TemplateInstance(TemplateInstance.Single)]
         public virtual ITemplate Content
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets contents that go within the "panel" div, but outside the "panel-body" div.
+        /// </summary>
+        /// <value>
+        /// The contents.
+        /// </value>
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TemplateContainer(typeof(Panel))]
+        [TemplateInstance(TemplateInstance.Single)]
+        public virtual ITemplate PostContent
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the footer contents.
+        /// </summary>
+        /// <value>
+        /// The contents.
+        /// </value>
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TemplateContainer(typeof(Panel))]
+        [TemplateInstance(TemplateInstance.Single)]
+        public virtual ITemplate Footer
         {
             get;
             set;
@@ -101,7 +157,7 @@ namespace Tie.Controls.Bootstrap
         }
 
         /// <summary>
-        /// Renders the HTML opening tag of the control to the specified writer. This method is used primarily by control developers.
+        /// Renders the opening HTML tag of the control into the specified <paramref name="writer"/>.
         /// </summary>
         /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
         public override void RenderBeginTag(HtmlTextWriter writer)
@@ -112,33 +168,29 @@ namespace Tie.Controls.Bootstrap
             {
                 writer.AddAttribute(HtmlTextWriterAttribute.Class, "panel-heading");
                 writer.RenderBeginTag(HtmlTextWriterTag.Div);
-                writer.Write(this.Title);
+                HtmlTextWriterTag titleTag = this.TitleTag;
+                if (titleTag == HtmlTextWriterTag.Unknown)
+                {
+                    writer.Write(this.Title);
+                }
+                else
+                {
+                    writer.AddAttribute(HtmlTextWriterAttribute.Class, "panel-title");
+                    writer.RenderBeginTag(titleTag);
+                    writer.Write(this.Title);
+                    writer.RenderEndTag();
+                }
                 writer.RenderEndTag();
             }
-
-            writer.AddAttribute(HtmlTextWriterAttribute.Class, "panel-body");
-            writer.RenderBeginTag(HtmlTextWriterTag.Div);
         }
 
         /// <summary>
-        /// Renders the HTML closing tag of the control into the specified writer. This method is used primarily by control developers.
-        /// </summary>
-        /// <param name="writer">A <see cref="T:System.Web.UI.HtmlTextWriter" /> that represents the output stream to render HTML content on the client.</param>
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            writer.RenderEndTag();
-            writer.RenderEndTag();
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event.
+        /// Raises the <see cref="E:System.Web.UI.Control.Init" /> event. This notifies the control to perform any steps necessary for its creation on a page request.
         /// </summary>
         /// <param name="e">An <see cref="T:System.EventArgs" /> object that contains the event data.</param>
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
-
-            // Initialize all child controls.
             this.CreateChildControls();
             this.ChildControlsCreated = true;
         }
@@ -148,11 +200,37 @@ namespace Tie.Controls.Bootstrap
         /// </summary>
         protected override void CreateChildControls()
         {
-            var container = new Control();
-            this.Content.InstantiateIn(container);
-
             this.Controls.Clear();
-            this.Controls.Add(container);
+
+            if (this.Content != null)
+            {
+                var contentsDiv = new HtmlGenericControl("div");
+                contentsDiv.Attributes.Add("class", "panel-body");
+                var contentsContainer = new Control();
+                contentsContainer.ID = "contentsContainer";
+                this.Content.InstantiateIn(contentsContainer);
+                contentsDiv.Controls.Add(contentsContainer);
+                this.Controls.Add(contentsDiv);
+            }
+
+            if (this.PostContent != null)
+            {
+                var postContainer = new Control();
+                postContainer.ID = "postContainer";
+                this.PostContent.InstantiateIn(postContainer);
+                this.Controls.Add(postContainer);
+            }
+
+            if (this.Footer != null)
+            {
+                var footerDiv = new HtmlGenericControl("div");
+                footerDiv.Attributes.Add("class", "panel-footer");
+                var footerContainer = new Control();
+                footerContainer.ID = "footerContainer";
+                this.Footer.InstantiateIn(footerContainer);
+                footerDiv.Controls.Add(footerContainer);
+                this.Controls.Add(footerDiv);
+            }
         }
 
         /// <summary>
@@ -161,15 +239,10 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string BuildCss()
         {
-            string str = "panel";
-            str += " " + this.GetCssPanelType();
-
-            if (!String.IsNullOrEmpty(this.CssClass))
-            {
-                str += " " + this.CssClass;
-            }
-
-            return str.Trim();
+            StringBuilder classes = new StringBuilder("panel");
+            classes.Append(this.GetCssPanelType());
+            StringHelper.AppendWithSpaceIfNotEmpty(classes, this.CssClass);
+            return classes.ToString();
         }
 
         /// <summary>
@@ -178,36 +251,26 @@ namespace Tie.Controls.Bootstrap
         /// <returns></returns>
         private string GetCssPanelType()
         {
-            string str = "";
-
             switch (this.PanelType)
             {
                 case PanelTypes.Primary:
-                    str = "panel-primary";
-                    break;
+                    return " panel-primary";
 
                 case PanelTypes.Info:
-                    str = "panel-info";
-                    break;
+                    return " panel-info";
 
                 case PanelTypes.Success:
-                    str = "panel-success";
-                    break;
+                    return " panel-success";
 
                 case PanelTypes.Warning:
-                    str = "panel-warning";
-                    break;
+                    return " panel-warning";
 
                 case PanelTypes.Danger:
-                    str = "panel-danger";
-                    break;
+                    return " panel-danger";
 
                 default:
-                    str = "panel-default";
-                    break;
+                    return " panel-default";
             }
-
-            return str;
         }
     }
 }
