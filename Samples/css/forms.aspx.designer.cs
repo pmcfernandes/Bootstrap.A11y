@@ -19,7 +19,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputEmail1;
+        protected global::Bootstrap.A11y.TextBox exampleInputEmail1;
         
         /// <summary>
         /// exampleInputPassword1 control.
@@ -28,7 +28,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputPassword1;
+        protected global::Bootstrap.A11y.TextBox exampleInputPassword1;
         
         /// <summary>
         /// exampleInputFile control.
@@ -46,7 +46,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputName2;
+        protected global::Bootstrap.A11y.TextBox exampleInputName2;
         
         /// <summary>
         /// exampleInputEmail2 control.
@@ -55,7 +55,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputEmail2;
+        protected global::Bootstrap.A11y.TextBox exampleInputEmail2;
         
         /// <summary>
         /// exampleInputEmail3 control.
@@ -64,7 +64,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputEmail3;
+        protected global::Bootstrap.A11y.TextBox exampleInputEmail3;
         
         /// <summary>
         /// exampleInputPassword3 control.
@@ -73,7 +73,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputPassword3;
+        protected global::Bootstrap.A11y.TextBox exampleInputPassword3;
         
         /// <summary>
         /// exampleInputAmount control.
@@ -82,7 +82,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox exampleInputAmount;
+        protected global::Bootstrap.A11y.TextBox exampleInputAmount;
         
         /// <summary>
         /// inputEmail3 control.
@@ -91,7 +91,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox inputEmail3;
+        protected global::Bootstrap.A11y.TextBox inputEmail3;
         
         /// <summary>
         /// inputPassword3 control.
@@ -100,7 +100,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox inputPassword3;
+        protected global::Bootstrap.A11y.TextBox inputPassword3;
         
         /// <summary>
         /// RadioButtonList1 control.
@@ -109,7 +109,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.RadioButtonList RadioButtonList1;
+        protected global::Bootstrap.A11y.RadioButtonList RadioButtonList1;
         
         /// <summary>
         /// RadioButtonList2 control.
@@ -118,7 +118,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.RadioButtonList RadioButtonList2;
+        protected global::Bootstrap.A11y.RadioButtonList RadioButtonList2;
         
         /// <summary>
         /// RadioButtonList2_Alert control.
@@ -127,7 +127,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Alert RadioButtonList2_Alert;
+        protected global::Bootstrap.A11y.Alert RadioButtonList2_Alert;
         
         /// <summary>
         /// RadioButtonList2_Literal control.
@@ -145,7 +145,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.CheckBoxList CheckBoxList3;
+        protected global::Bootstrap.A11y.CheckBoxList CheckBoxList3;
         
         /// <summary>
         /// CheckBoxList3_Alert control.
@@ -154,7 +154,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Alert CheckBoxList3_Alert;
+        protected global::Bootstrap.A11y.Alert CheckBoxList3_Alert;
         
         /// <summary>
         /// CheckBoxList3_Literal control.
@@ -172,7 +172,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox amount;
+        protected global::Bootstrap.A11y.TextBox amount;
         
         /// <summary>
         /// disabledTextInput control.
@@ -181,7 +181,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.TextBox disabledTextInput;
+        protected global::Bootstrap.A11y.TextBox disabledTextInput;
         
         /// <summary>
         /// disabledSelect control.

@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -156,11 +157,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tie.Controls.Bootstrap.v45\Tie.Controls.Bootstrap.v45.csproj">
+    <ProjectReference Include="..\Bootstrap.A11y.v45\Bootstrap.A11y.v45.csproj">
       <Project>{7dfb3b6c-0e3c-4fc1-8b3e-f3dc1142ef91}</Project>
-      <Name>Tie.Controls.Bootstrap.v45</Name>
+      <Name>Bootstrap.A11y.v45</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -187,7 +189,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>REM %25SystemRoot%25\Microsoft.NET\Framework\v4.0.30319\msbuild.exe $(ProjectDir)..\Tie.Controls.Bootstrap.shfbproj</PostBuildEvent>
+    <PostBuildEvent>REM %25SystemRoot%25\Microsoft.NET\Framework\v4.0.30319\msbuild.exe $(ProjectDir)..\Bootstrap.A11y.shfbproj</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

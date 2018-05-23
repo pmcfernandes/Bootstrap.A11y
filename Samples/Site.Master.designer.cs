@@ -37,7 +37,7 @@ namespace Samples {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.NavBar NavBar1;
+        protected global::Bootstrap.A11y.NavBar NavBar1;
         
         /// <summary>
         /// Hamburger1 control.
@@ -46,7 +46,7 @@ namespace Samples {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Hamburger Hamburger1;
+        protected global::Bootstrap.A11y.Hamburger Hamburger1;
         
         /// <summary>
         /// Container1 control.
@@ -55,7 +55,7 @@ namespace Samples {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.Container Container1;
+        protected global::Bootstrap.A11y.Container Container1;
         
         /// <summary>
         /// header control.
@@ -64,7 +64,7 @@ namespace Samples {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.PageHeader header;
+        protected global::Bootstrap.A11y.PageHeader header;
         
         /// <summary>
         /// MainContent control.

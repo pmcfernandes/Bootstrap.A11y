@@ -29,7 +29,7 @@
   <pre><code>&lt;system.web&gt;
     &lt;pages&gt;
         &lt;controls&gt;
-            &lt;add tagPrefix="twt" namespace="Tie.Controls.Bootstrap" assembly="Tie.Controls.Bootstrap" /&gt;
+            &lt;add tagPrefix="twt" namespace="Bootstrap.A11y" assembly="Bootstrap.A11y" /&gt;
         &lt;/controls&gt;
     &lt;/pages&gt;
 &lt;/system.web&gt;</code></pre>

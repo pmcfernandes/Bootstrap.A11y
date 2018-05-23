@@ -1,7 +1,10 @@
-# Tie.Controls.Bootstrap
+# Bootstrap.A11y
 
 A collection of accessible [Twitter Bootstrap v3.3.7](https://github.com/twbs/bootstrap/tree/v3.3.7) user controls for ASP.NET. It's easy to forget to add ARIA attributes and other accessibility markup. With these controls, it's all handled for you! 
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/d23777adcd734105bc20b3a4ba1cf258)](https://www.codacy.com/app/pmcfernandes/Tie-Controls-Bootstrap)
+
+This project is forked from the [Tie.Controls.Bootstrap](https://github.com/Patreo/Tie.Controls.Bootstrap) project by [pmcfernandes](https://github.com/pmcfernandes) and features additional controls and accessibility markup. Care has been taken to maintain backwards compatibility, making the transition from Tie.Controls.Bootstrap to Bootstrap.A11y as smooth as possible.
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1003b1dec254b0395506d59c5319aa9)](https://www.codacy.com/app/kinzdesign/Bootstrap.A11y?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wsomweb/Bootstrap.A11y&amp;utm_campaign=Badge_Grade)
 
 ## Getting Started
 
@@ -11,9 +14,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 Just open your Visual Studio and in Tools > Nuget > Package Manager Console write follow line
 
-    Install-Package Tie.Controls.Bootstrap
+    Install-Package Bootstrap.A11y
     
-See more informations here: https://www.nuget.org/packages/Tie.Controls.Bootstrap/    
+See more informations here: https://www.nuget.org/packages/Bootstrap.A11y/    
 
 ### Registering the Controls
 
@@ -22,7 +25,7 @@ Add the following entry to your root [web.config](Samples/web.Config) file. This
     <system.web>
         <pages>
             <controls>
-                <add tagPrefix="twt" namespace="Tie.Controls.Bootstrap" assembly="Tie.Controls.Bootstrap" />
+                <add tagPrefix="twt" namespace="Bootstrap.A11y" assembly="Bootstrap.A11y" />
             </controls>
         </pages>
     </system.web>
@@ -58,11 +61,11 @@ If you prefer to use [jongund's modified version of the PayPal Bootstrap Accessi
 
 ## Deployment
 
-When deploying to a server, only the `Tie.Controls.Bootstrap.dll` file is needed.
+When deploying to a server, only the `Bootstrap.A11y.dll` file is needed.
 
 ## Documentation
 
-[HTML documentation](https://wsomweb.github.io/Tie.Controls.Bootstrap.ARIA/Help/) is available within the project's [Help folder](Help\). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
+[HTML documentation](https://wsomweb.github.io/Bootstrap.A11y/) is available within the project's [`docs` folder](docs/). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
 
 ### Some Examples of Usage
 
@@ -140,7 +143,7 @@ The [Samples project](Samples/) provides additional examples based on the [Boots
 ## Authors
 
 * **Pedro Fernandes** - *Initial work* - [pmcfernandes](https://github.com/pmcfernandes)
-* **Kinsey Roberts** - *Accessibility overhaul* - [kinzdesign](https://github.com/kinzdesign) for [Weatherhead School of Management](https://github.com/wsomweb)
+* **Kinsey Roberts** - *Accessibility overhaul* - [kinzdesign](https://github.com/kinzdesign) for [Weatherhead School of Management](https://github.com/wsomweb) at [Case Western Reserve University](https://github.com/cwru)
 
 ## License
 

@@ -19,7 +19,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvBasic;
+        protected global::Bootstrap.A11y.GridView gvBasic;
         
         /// <summary>
         /// gvStriped control.
@@ -28,7 +28,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvStriped;
+        protected global::Bootstrap.A11y.GridView gvStriped;
         
         /// <summary>
         /// gvBordered control.
@@ -37,7 +37,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvBordered;
+        protected global::Bootstrap.A11y.GridView gvBordered;
         
         /// <summary>
         /// gvHover control.
@@ -46,7 +46,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvHover;
+        protected global::Bootstrap.A11y.GridView gvHover;
         
         /// <summary>
         /// gvCondensed control.
@@ -55,7 +55,7 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvCondensed;
+        protected global::Bootstrap.A11y.GridView gvCondensed;
         
         /// <summary>
         /// gvResponsive control.
@@ -64,6 +64,6 @@ namespace Samples.css {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Tie.Controls.Bootstrap.GridView gvResponsive;
+        protected global::Bootstrap.A11y.GridView gvResponsive;
     }
 }
