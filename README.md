@@ -65,7 +65,7 @@ When deploying to a server, only the `Bootstrap.A11y.dll` file is needed.
 
 ## Documentation
 
-[HTML documentation](https://wsomweb.github.io/Bootstrap.A11y/) is available within the project's [`docs` folder](docs/). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
+[HTML documentation](https://wsomweb.github.io/Bootstrap.A11y/docs/) is available within the project's [`docs` folder](docs/). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
 
 ### Some Examples of Usage
 
