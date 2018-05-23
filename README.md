@@ -20,7 +20,7 @@ See more informations here: https://www.nuget.org/packages/Bootstrap.A11y/
 
 ### Registering the Controls
 
-Add the following entry to your root [web.config](Samples/web.Config) file. This registers the controls for use anywhere on your site with the `twt:` prefix:
+Add the following entry to your root [web.config](Samples/Web.config) file. This registers the controls for use anywhere on your site with the `twt:` prefix:
 
     <system.web>
         <pages>
@@ -42,7 +42,7 @@ By default, the CSS and JavaScript of the [PayPal Bootstrap Accessibility Plugin
 *   Modal
 *   TabControl
 
-This behavior can be modified in the `appSettings` section of your root [web.config](Samples/web.Config) file:
+This behavior can be modified in the `appSettings` section of your root [web.config](Samples/Web.config) file:
 
 If you are already including the Bootstrap Accessibility Plugin CSS and/or JS in your site, you can disable the ClientScriptManager injection by adding one or both of the following settings:
 
