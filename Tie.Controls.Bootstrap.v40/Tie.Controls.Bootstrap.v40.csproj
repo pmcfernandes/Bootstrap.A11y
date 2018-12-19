@@ -7,8 +7,8 @@
     <ProjectGuid>{2A721F2F-F821-4FC8-B2C0-B29A205B2FEE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tie.Controls.Bootstrap.v40</RootNamespace>
-    <AssemblyName>Tie.Controls.Bootstrap</AssemblyName>
+    <RootNamespace>Tie.Controls.Bootstrap</RootNamespace>
+    <AssemblyName>Tie.Controls.Bootstrap.v40</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
