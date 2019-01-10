@@ -19,6 +19,10 @@ namespace Tie.Controls.Bootstrap.Adapters
 {
     public class ButtonAdapter : WebControlAdapter
     {
+        /// <summary>
+        /// Renders the specified writer.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
             writer.AddAttribute(System.Web.UI.HtmlTextWriterAttribute.Class, "btn btn-default" + (!String.IsNullOrEmpty(this.Control.CssClass) ? " " + this.Control.CssClass : ""));

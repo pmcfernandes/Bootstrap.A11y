@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.Adapters;
 
@@ -9,15 +6,7 @@ namespace Tie.Controls.Bootstrap.Adapters
 {
     public class GridViewAdapter : WebControlAdapter
     {
-        private System.Web.UI.WebControls.GridView GridView; 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GridViewAdapter"/> class.
-        /// </summary>
-        public GridViewAdapter()
-        {
-            
-        }
+        private System.Web.UI.WebControls.GridView gridView; 
 
         /// <summary>
         /// Overrides the <see cref="M:System.Web.UI.Control.OnPreRender(System.EventArgs)" /> method for the associated control.
@@ -25,12 +14,20 @@ namespace Tie.Controls.Bootstrap.Adapters
         /// <param name="e">An <see cref="T:System.EventArgs" /> that contains the event data.</param>
         protected override void OnPreRender(EventArgs e)
         {
-            if (this.Control is GridView)
+            gridView = this.Control as System.Web.UI.WebControls.GridView; 
+
+            if (gridView != null)
             {
-                this.GridView = ((System.Web.UI.WebControls.GridView)this.Control);
-                this.GridView.GridLines = GridLines.None;
-                this.GridView.UseAccessibleHeader = true;
-                this.GridView.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
+                gridView.GridLines = GridLines.None;
+                gridView.UseAccessibleHeader = true;
+                gridView.HeaderRow.TableSection = TableRowSection.TableHeader;
+                gridView.FooterRow.TableSection = TableRowSection.TableFooter;                
+                gridView.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+
+                if (gridView.TopPagerRow != null)
+                {
+                    gridView.TopPagerRow.TableSection = TableRowSection.TableHeader;
+                }
             }
 
             base.OnPreRender(e);
