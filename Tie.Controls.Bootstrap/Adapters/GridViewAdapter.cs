@@ -20,14 +20,11 @@ namespace Tie.Controls.Bootstrap.Adapters
             {
                 gridView.GridLines = GridLines.None;
                 gridView.UseAccessibleHeader = true;
-                gridView.HeaderRow.TableSection = TableRowSection.TableHeader;
-                gridView.FooterRow.TableSection = TableRowSection.TableFooter;                
-                gridView.BottomPagerRow.TableSection = TableRowSection.TableFooter;
 
-                if (gridView.TopPagerRow != null)
-                {
-                    gridView.TopPagerRow.TableSection = TableRowSection.TableHeader;
-                }
+                if (gridView.HeaderRow != null) gridView.HeaderRow.TableSection = TableRowSection.TableHeader;
+                if (gridView.FooterRow != null) gridView.FooterRow.TableSection = TableRowSection.TableFooter;
+                if (gridView.BottomPagerRow != null) gridView.BottomPagerRow.TableSection = TableRowSection.TableFooter;
+                if (gridView.TopPagerRow != null) gridView.TopPagerRow.TableSection = TableRowSection.TableHeader;
             }
 
             base.OnPreRender(e);
