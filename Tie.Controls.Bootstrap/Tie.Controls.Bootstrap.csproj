@@ -70,6 +70,7 @@
     <Compile Include="Hamburger.cs" />
     <Compile Include="Heading.cs" />
     <Compile Include="Helpers\ControlFinder.cs" />
+    <Compile Include="Icon.cs" />
     <Compile Include="IListItem.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Adapters\InputAdapter.cs" />

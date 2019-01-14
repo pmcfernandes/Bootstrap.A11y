@@ -126,6 +126,9 @@
     <Compile Include="..\Tie.Controls.Bootstrap\Helpers\ControlFinder.cs">
       <Link>Helpers\ControlFinder.cs</Link>
     </Compile>
+    <Compile Include="..\Tie.Controls.Bootstrap\Icon.cs">
+      <Link>Icon.cs</Link>
+    </Compile>
     <Compile Include="..\Tie.Controls.Bootstrap\IListItem.cs">
       <Link>IListItem.cs</Link>
     </Compile>
