@@ -83,16 +83,11 @@
     <Compile Include="GridViewPager.cs" />
     <Compile Include="Hamburger.cs" />
     <Compile Include="Heading.cs" />
-<<<<<<< HEAD:Tie.Controls.Bootstrap/Tie.Controls.Bootstrap.csproj
-    <Compile Include="Helpers\ControlFinder.cs" />
-    <Compile Include="Icon.cs" />
-=======
     <Compile Include="Helpers\ControlHelper.cs" />
     <Compile Include="Helpers\PagingHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\NamespaceDoc.cs" />
     <Compile Include="HyperLinkButton.cs" />
->>>>>>> pr/5:Bootstrap.A11y/Bootstrap.A11y.csproj
     <Compile Include="IListItem.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Adapters\InputAdapter.cs" />

@@ -1,10 +1,8 @@
 # Bootstrap.A11y
 
-A collection of accessible [Twitter Bootstrap v3.3.7](https://github.com/twbs/bootstrap/tree/v3.3.7) user controls for ASP.NET. It's easy to forget to add ARIA attributes and other accessibility markup. With these controls, it's all handled for you! 
+A collection of accessible [Twitter Bootstrap v3.4.1(https://github.com/twbs/bootstrap/tree/v3.4.1) user controls for ASP.NET. It's easy to forget to add ARIA attributes and other accessibility markup. With these controls, it's all handled for you! 
 
-This project is forked from the [Tie.Controls.Bootstrap](https://github.com/Patreo/Tie.Controls.Bootstrap) project by [pmcfernandes](https://github.com/pmcfernandes) and features additional controls and accessibility markup. Care has been taken to maintain backwards compatibility, making the transition from Tie.Controls.Bootstrap to Bootstrap.A11y as smooth as possible.
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c1003b1dec254b0395506d59c5319aa9)](https://www.codacy.com/app/kinzdesign/Bootstrap.A11y?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wsomweb/Bootstrap.A11y&amp;utm_campaign=Badge_Grade)
+This project add features additional controls and accessibility markup. Care has been taken to maintain backwards compatibility, making the transition from Tie.Controls.Bootstrap to Bootstrap.A11y as smooth as possible.
 
 ## Getting Started
 
@@ -65,7 +63,7 @@ When deploying to a server, only the `Bootstrap.A11y.dll` file is needed.
 
 ## Documentation
 
-[HTML documentation](https://wsomweb.github.io/Bootstrap.A11y/docs/) is available within the project's [`docs` folder](docs/). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
+[HTML documentation](https://github.com/pmcfernandes/Bootstrap.A11y/docs/) is available within the project's [`docs` folder](docs/). This documentation is generated using [Sandcastle Help File Generator](https://ewsoftware.github.io/SHFB/index.html).
 
 ### Some Examples of Usage
 

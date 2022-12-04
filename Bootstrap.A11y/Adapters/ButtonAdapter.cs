@@ -24,15 +24,9 @@ namespace Bootstrap.A11y.Adapters
     public class ButtonAdapter : WebControlAdapter
     {
         /// <summary>
-<<<<<<< HEAD:Tie.Controls.Bootstrap/Adapters/ButtonAdapter.cs
-        /// Renders the specified writer.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-=======
         /// Renders the control to the specified HTML writer.
         /// </summary>
         /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter" /> object that receives the control content.</param>
->>>>>>> pr/5:Bootstrap.A11y/Adapters/ButtonAdapter.cs
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
             writer.AddAttribute(System.Web.UI.HtmlTextWriterAttribute.Class, "btn btn-default" + (!String.IsNullOrEmpty(this.Control.CssClass) ? " " + this.Control.CssClass : ""));
